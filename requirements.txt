@@ -1,3 +1,4 @@
-Flask
-SQLAlchemy
-pandas
+Flask==3.1.0
+gunicorn==23.0.0
+pandas==2.2.3
+SQLAlchemy==2.0.36

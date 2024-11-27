@@ -17,9 +17,9 @@ var twasGridOptions = {
         { headerName: "Modality", field: "modality", type: 'textColumn' },
         { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn' },
         { 
-            headerName: "TWAS p-value", 
-            field: "twas_p", 
-            type: 'numericColumn', 
+            headerName: "TWAS p-value",
+            field: "twas_p",
+            type: 'numericColumn',
             cellDataType: 'number',
             valueFormatter: params => {
                 if (params.value == null) return '';

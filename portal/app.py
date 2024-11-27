@@ -1,11 +1,11 @@
 """Initialize Flask and register routes."""
 
 from flask import Flask, request, jsonify, render_template
-import json
+import os
 from sqlalchemy import create_engine
 import sqlalchemy as db
-from .config import DATABASE_URI, TISSUES, TRAITS
-from .routes.api_routes import ag_grid_query
+from portal.config import DATABASE_URI, TISSUES, TRAITS
+from portal.routes.api_routes import ag_grid_query
 app = Flask(__name__)
 engine = create_engine(DATABASE_URI)
 
@@ -36,4 +36,5 @@ def get_qtls_combined():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
