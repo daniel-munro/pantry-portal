@@ -1,10 +1,10 @@
 """Initialize Flask and register routes."""
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 import os
 from sqlalchemy import create_engine
 import sqlalchemy as db
-from portal.config import DATABASE_URI, TISSUES, TRAITS
+from portal.config import DATA_DIR, DATABASE_URI, TISSUES, TRAITS
 from portal.routes.api_routes import ag_grid_query
 app = Flask(__name__)
 engine = create_engine(DATABASE_URI)
@@ -16,6 +16,14 @@ def index():
 @app.route('/download')
 def download():
     return render_template('download.html')
+
+@app.route('/data/<path:filename>')
+def download_file(filename):
+    return send_from_directory(
+        DATA_DIR,
+        filename,
+        as_attachment=True,
+    )
 
 @app.route('/api/tissues')
 def get_tissues():

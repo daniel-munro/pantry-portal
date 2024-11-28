@@ -43,7 +43,7 @@ document.getElementById('rnaphenos-tissue-select').addEventListener('change', fu
         const fileName = `${tissue}.${mod.file}.unnorm.bed.gz`;
         const row = `
             <tr>
-                <td><a href="/static/data/RNA_phenotypes/${fileName}" download>${fileName}</a></td>
+                <td><a href="/data/RNA_phenotypes/${fileName}" download>${fileName}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
@@ -61,7 +61,7 @@ document.getElementById('covariates-tissue-select').addEventListener('change', f
         const fileName = `${tissue}.${mod.file}.covar.tsv`;
         const row = `
             <tr>
-                <td><a href="/static/data/covariates/${fileName}" download>${fileName}</a></td>
+                <td><a href="/data/covariates/${fileName}" download>${fileName}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
@@ -87,7 +87,7 @@ fetch('/api/traits')
                     filter: true,
                     filterParams: { filterOptions: ['contains', 'equals'] },
                     cellRenderer: params => {
-                        return `<a href="/static/data/TWAS_associations/${params.value}" download>${params.value}</a>`;
+                        return `<a href="/data/TWAS_associations/${params.value}" download>${params.value}</a>`;
                     }
                 },
                 { 

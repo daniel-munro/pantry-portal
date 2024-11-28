@@ -1,11 +1,9 @@
 """Load TSV files into a SQLite database."""
 
-import os
-import sys
 import pandas as pd
 from sqlalchemy import create_engine
 
-engine = create_engine('sqlite:///portal/data.db')
+engine = create_engine('sqlite:///data/data.db')
 
 def load_twas_results(tsv_file):
     df = pd.read_csv(tsv_file, sep='\t', usecols=['tissue', 'trait', 'gene_id', 'modality', 'phenotype_id', 'TWAS.P'])
@@ -21,5 +19,5 @@ def load_qtls_combined(tsv_file):
     df.to_sql('qtls_combined', engine, if_exists='fail', index=True, index_label='id')
 
 if __name__ == '__main__':
-    load_twas_results('portal/static/data/processed/gtex.twas_hits.tsv.gz')
-    load_qtls_combined('portal/static/data/processed/gtex.comb.qtls.tsv.gz')
+    load_twas_results('data/processed/gtex.twas_hits.tsv.gz')
+    load_qtls_combined('data/processed/gtex.comb.qtls.tsv.gz')

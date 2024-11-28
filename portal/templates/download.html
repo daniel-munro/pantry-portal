@@ -59,57 +59,57 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><a href="/static/data/processed/genes_pcg_lncrna.txt">genes_pcg_lncrna.txt</a></td>
+                            <td><a href="/data/processed/genes_pcg_lncrna.txt">genes_pcg_lncrna.txt</a></td>
                             <td>Ensembl gene IDs for the subset of genes that are protein-coding or lncRNA. We include all genes in the Ensembl annotations in phenotyping and genetic analyses, and filter to this set of genes for the aggregated results below.</td>
                             <td class="text-end">0.6 MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/geuvadis.sep.assoc.tsv.gz">geuvadis.sep.assoc.tsv.gz</a></td>
+                            <td><a href="/data/processed/geuvadis.sep.assoc.tsv.gz">geuvadis.sep.assoc.tsv.gz</a></td>
                             <td>Concatenation of the top associations per gene (<code>*.cis_qtl.txt.gz</code>) for the six modalities for Geuvadis, with a subset of the original columns.</td>
                             <td class="text-end">2.3 MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/geuvadis.sep.qtls.tsv.gz">geuvadis.sep.qtls.tsv.gz</a></td>
+                            <td><a href="/data/processed/geuvadis.sep.qtls.tsv.gz">geuvadis.sep.qtls.tsv.gz</a></td>
                             <td>Concatenation of the conditionally independent cis-QTLs (<code>*.cis_independent_qtl.txt.gz</code>) for the six modalities for Geuvadis, with a subset of the original columns.</td>
                             <td class="text-end">1.0 MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/geuvadis.comb.qtls.tsv.gz">geuvadis.comb.qtls.tsv.gz</a></td>
+                            <td><a href="/data/processed/geuvadis.comb.qtls.tsv.gz">geuvadis.comb.qtls.tsv.gz</a></td>
                             <td>The <code>GEUVADIS.combined.cis_independent_qtl.txt.gz</code> file processed to match the format of <code>geuvadis.sep.qtls.tsv.gz</code>, for easier comparison of cis-QTLs from separate vs. combined-modality mapping.</td>
                             <td class="text-end">0.5 MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/geuvadis.hsq.tsv.gz">geuvadis.hsq.tsv.gz</a></td>
+                            <td><a href="/data/processed/geuvadis.hsq.tsv.gz">geuvadis.hsq.tsv.gz</a></td>
                             <td>Concatenation and processing of the <code>*.twas_weights.profile</code> TWAS transcriptomic model summary tables for all modalities for Geuvadis.</td>
                             <td class="text-end">1.1 MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/geuvadis.twas.tsv.gz" download>geuvadis.twas.tsv.gz</a></td>
+                            <td><a href="/data/processed/geuvadis.twas.tsv.gz" download>geuvadis.twas.tsv.gz</a></td>
                             <td>Concatenation and processing of all TWAS associations (even if not significant) for all modalities and traits for Geuvadis.</td>
                             <td class="text-end">73 MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/gtex.sep.assoc.tsv.gz" download>gtex.sep.assoc.tsv.gz</a></td>
+                            <td><a href="/data/processed/gtex.sep.assoc.tsv.gz" download>gtex.sep.assoc.tsv.gz</a></td>
                             <td>Concatenation of the top associations per gene (<code>*.cis_qtl.txt.gz</code>) for the six modalities for all GTEx tissues, with a subset of the original columns.</td>
                             <td class="text-end">?? MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/gtex.sep.qtls.tsv.gz" download>gtex.sep.qtls.tsv.gz</a></td>
+                            <td><a href="/data/processed/gtex.sep.qtls.tsv.gz" download>gtex.sep.qtls.tsv.gz</a></td>
                             <td>Concatenation of the conditionally independent cis-QTLs (<code>*.cis_independent_qtl.txt.gz</code>) for the six modalities for all GTEx tissues, with a subset of the original columns.</td>
                             <td class="text-end">33 MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/gtex.comb.qtls.tsv.gz" download>gtex.comb.qtls.tsv.gz</a></td>
+                            <td><a href="/data/processed/gtex.comb.qtls.tsv.gz" download>gtex.comb.qtls.tsv.gz</a></td>
                             <td>Concatenation of the <code>{tissue}.combined.cis_independent_qtl.txt.gz</code> files for all GTEx tissues processed to match the format of <code>gtex.sep.qtls.tsv.gz</code>, for easier comparison of cis-QTLs from separate vs. combined-modality mapping.</td>
                             <td class="text-end">19 MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/gtex.hsq.tsv.gz" download>gtex.hsq.tsv.gz</a></td>
+                            <td><a href="/data/processed/gtex.hsq.tsv.gz" download>gtex.hsq.tsv.gz</a></td>
                             <td>Concatenation and processing of the <code>*.twas_weights.profile</code> TWAS transcriptomic model summary tables for the six modalities for all GTEx tissues.</td>
                             <td class="text-end">49 MB</td>
                         </tr>
                         <tr>
-                            <td><a href="/static/data/processed/gtex.twas_hits.tsv.gz" download>gtex.twas_hits.tsv.gz</a></td>
+                            <td><a href="/data/processed/gtex.twas_hits.tsv.gz" download>gtex.twas_hits.tsv.gz</a></td>
                             <td>Concatenation and processing of all TWAS hits for all modalities and traits for all GTEx tissues. Unlike <code>geuvadis.twas.tsv.gz</code>, this is filtered to hits passing a genome-wide P-value threshold, adjusted for number of RNA modalities, of 8.33e-9 (5e-8 / 6), to reduce file size.</td>
                             <td class="text-end">13 MB</td>
                         </tr>
