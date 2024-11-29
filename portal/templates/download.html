@@ -37,13 +37,19 @@
                 <button class="nav-link active" id="aggregated-tab" data-bs-toggle="tab" data-bs-target="#aggregated" type="button" role="tab" aria-controls="aggregated" aria-selected="true">Aggregated results</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="raw-tab" data-bs-toggle="tab" data-bs-target="#rnaphenos" type="button" role="tab" aria-controls="rnaphenos" aria-selected="false">RNA phenotypes</button>
+                <button class="nav-link" id="rnaphenos-tab" data-bs-toggle="tab" data-bs-target="#rnaphenos" type="button" role="tab" aria-controls="rnaphenos" aria-selected="false">RNA phenotypes</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="raw-tab" data-bs-toggle="tab" data-bs-target="#covariates" type="button" role="tab" aria-controls="covariates" aria-selected="false">Covariates</button>
+                <button class="nav-link" id="covariates-tab" data-bs-toggle="tab" data-bs-target="#covariates" type="button" role="tab" aria-controls="covariates" aria-selected="false">Covariates</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="raw-tab" data-bs-toggle="tab" data-bs-target="#twasassoc" type="button" role="tab" aria-controls="twasassoc" aria-selected="false">TWAS associations</button>
+                <button class="nav-link" id="qtls-tab" data-bs-toggle="tab" data-bs-target="#qtls" type="button" role="tab" aria-controls="qtls" aria-selected="false">cis-xQTLs</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="twasmodels-tab" data-bs-toggle="tab" data-bs-target="#twasmodels" type="button" role="tab" aria-controls="twasmodels" aria-selected="false">xTWAS models</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="twasassoc-tab" data-bs-toggle="tab" data-bs-target="#twasassoc" type="button" role="tab" aria-controls="twasassoc" aria-selected="false">xTWAS associations</button>
             </li>
         </ul>
         
@@ -117,7 +123,7 @@
                 </table>
             </div>
 
-            <div class="tab-pane fade" id="rnaphenos" role="tabpanel" aria-labelledby="raw-tab">
+            <div class="tab-pane fade" id="rnaphenos" role="tabpanel" aria-labelledby="rnaphenos-tab">
                 <p>RNA phenotypes were quantified for Geuvadis and all 54 GTEx tissues, including the five tissues excluded from downstream genetic analyses due to small sample size. The tables are in BED format, with the first three columns specifying the TSS coordinate of each phenotype's gene, i.e., the input format for <code>tensorQTL</code>. These are the raw phenotypes, i.e. the actual ratios or quantities. Processed tables were prepared for QTL mapping and xTWAS, but are not included here. They are the result of quantile-normalizing samples to the average empirical distribution, followed by rank-based inverse-normal transformation per phenotype. For GTEx tissues, we included only samples with genotypes, converted sample IDs to individual IDs to match the genotypes, and omitted the five tissues originally excluded from the GTEx QTL mapping.</p>
 
                 <div class="mb-3">
@@ -139,8 +145,9 @@
                 
             </div>
 
-            <div class="tab-pane fade" id="covariates" role="tabpanel" aria-labelledby="raw-tab">
-                <p>For each tissue-modality RNA phenotype table, the covariates include the first 20 principal components (PCs) of the phenotype table and the first 5 PCs of the genotype alternative allele count matrix. We include covariates and cis-QTL results for a pseudo-modality called <code>combined</code>, which is a concatenation of phenotypes from all six modalities. Covariates for these are computed from the <code>combined</code> phenotype table, and are not concatenations of each modality's covariates. We used them for 'combined-modality mapping' of cis-QTLs, but not for xTWAS.</p>
+            <div class="tab-pane fade" id="covariates" role="tabpanel" aria-labelledby="covariates-tab">
+                <p>For each tissue-modality RNA phenotype table, the covariates include the first 20 principal components (PCs) of the phenotype table and the first 5 PCs of the genotype alternative allele count matrix. We include two formats for each covariate table, one compatible with tensorQTL (<code>*.covar.tsv</code>), and one in PLINK format for compatibility with FUSION (<code>*.covar.plink.tsv</code>).</p>
+                <p>We include covariates and cis-QTL results for a pseudo-modality called <code>combined</code>, which is a concatenation of phenotypes from all six modalities. Covariates for these are computed from the <code>combined</code> phenotype table, and are not concatenations of each modality's covariates. We used them for cross-modality mapping of cis-QTLs, but not for xTWAS.</p>
 
                 <div class="mb-3">
                     <label for="covariates-tissue-select" class="form-label">Select Tissue:</label>
@@ -154,6 +161,7 @@
                         <tr>
                             <th>File</th>
                             <th>Modality</th>
+                            <th>Format</th>
                         </tr>
                     </thead>
                     <tbody id="covariates-table-body"></tbody>
@@ -161,7 +169,49 @@
                 
             </div>
 
-            <div class="tab-pane fade" id="twasassoc" role="tabpanel" aria-labelledby="raw-tab">
+            <div class="tab-pane fade" id="qtls" role="tabpanel" aria-labelledby="qtls-tab">
+                <p>Output files from tensorQTL run in <code>cis</code> mode (<code>*.cis_qtl.txt.gz</code>, top association per gene, even if not significant) and <code>cis_independent</code> mode (<code>*.cis_independent_qtl.txt.gz</code>, all conditionally-independent cis-QTLs). Files for the pseudo-modality <code>combined</code> are the result of running tensorQTL on combined-modality phenotype tables and group files, so that cis-QTLs are conditionally independent across modalities per gene (cross-modality mapping).</p>
+
+                <div class="mb-3">
+                    <label for="qtls-tissue-select" class="form-label">Select Tissue:</label>
+                    <select class="form-select" id="qtls-tissue-select">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Modality</th>
+                        </tr>
+                    </thead>
+                    <tbody id="qtls-table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="twasmodels" role="tabpanel" aria-labelledby="twasmodels-tab">
+                <p>A set of TWAS transcriptomic models was generated for each tissue-modality pair using FUSION. The weights and summary files are provided in compressed archives, and the outputs of the FUSION script <code>FUSION.profile_wgt.R</code>, i.e. tables giving cis-heritability and model stats per phenotype, are also included separately (<code>*.twas_weights.profile</code>).</p>
+
+                <div class="mb-3">
+                    <label for="twasmodels-tissue-select" class="form-label">Select Tissue:</label>
+                    <select class="form-select" id="twasmodels-tissue-select">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Modality</th>
+                        </tr>
+                    </thead>
+                    <tbody id="twasmodels-table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="twasassoc" role="tabpanel" aria-labelledby="twasassoc-tab">
                 <p>TWAS associations were calculated for each set of models against summary stats for each of <a href="https://zenodo.org/records/3629742#.XjCh9OF7m90">114 GWAS traits previously harmonized to GTEx v8 variant reference</a>. Outputs of <code>FUSION.assoc_test.R</code> were concatenated across chromosomes to get one table per trait-tissue-modality combination. Tables are provided in compressed archives per trait</p>
 
                 <div id="twasassoc-table" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>

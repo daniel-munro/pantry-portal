@@ -31,13 +31,49 @@
     </nav>
 
     <div class="container">
-        <h1>Pantry Portal</h1>
+        <h1 class="text-center">Pantry Portal</h1>
 
-        <h3>TWAS hits</h3>
+        <p>This portal contains the results of multimodal RNA phenotyping and genetic analyses for 50 human tissue datasets using Pantry. It includes RNA phenotypes, covariates, cis-xQTL results from tensorQTL, and weights and associations for multimodal transcriptome-wide association study (xTWAS) results using FUSION, for six RNA modalities, for Geuvadis and 49 GTEx tissues. The xTWAS data covers 114 traits using GWAS data from <a href="https://doi.org/10.5281/zenodo.3629742">Publicly available GWAS summary statistics, harmonized and imputed to GTEx v8' variant reference</a>.</p>
+
+        <div class="row mt-4 mb-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">📄 Publication</h5>
+                        <p class="card-text">Multimodal analysis of RNA sequencing data powers discovery of complex trait genetics</p>
+                        <a href="https://www.biorxiv.org/content/10.1101/2024.05.14.594051v1" class="btn btn-primary">Read Paper</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">💻 Source Code</h5>
+                        <p class="card-text">Access the complete source code for Pantry on GitHub</p>
+                        <a href="https://github.com/PejLab/Pantry" class="btn btn-primary">View on GitHub</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">📊 Dataset</h5>
+                        <p class="card-text">Download the complete dataset from Zenodo</p>
+                        <a href="https://zenodo.org/records/13922139" class="btn btn-primary">Access Data</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>Browse the xTWAS hits and xQTLs below, or <a href="/download">download the data</a>, including RNA phenotypes, covariates, xQTLs, xTWAS weights, and xTWAS hits.</p>
+
+        <h3 class="mt-5">xTWAS hits</h3>
         <div id="twas-hits-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
 
-        <h3>QTLs</h3>
+        <h3 class="mt-5">cis-xQTLs</h3>
         <div id="qtls-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
+
+        <br>
     </div>
 </body>
 </html>
