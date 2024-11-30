@@ -137,8 +137,11 @@ fetch('/api/traits')
     .then(response => response.json())
     .then(traits => {
         const rowData = traits.map(trait => ({
-            file: `${trait}.tar.bz2`,
-            trait: trait,
+            file: `${trait.id}.tar.bz2`,
+            trait: trait.name,
+            category: trait.category,
+            color: trait.color,
+            n: trait.n
         }));
 
         var gridOptions = {
@@ -159,8 +162,37 @@ fetch('/api/traits')
                     field: "trait",
                     sortable: true,
                     filter: true,
+                    filterParams: { filterOptions: ['contains', 'equals'] },
                     flex: 1,
-                    filterParams: { filterOptions: ['contains', 'equals'] } ,
+                },
+                {
+                    headerName: "Category", 
+                    field: "category",
+                    sortable: true,
+                    filter: true,
+                    filterParams: { filterOptions: ['contains', 'equals'] },
+                    width: 240,
+                    cellRenderer: params => {
+                        const circle = `<span style="
+                            display: inline-block;
+                            width: 12px;
+                            height: 12px;
+                            border-radius: 50%;
+                            background-color: ${params.data.color};
+                            margin-right: 8px;
+                            vertical-align: middle;
+                        "></span>`;
+                        return circle + params.value;
+                    }
+                },
+                {
+                    headerName: "GWAS N",
+                    field: "n",
+                    sortable: true,
+                    filter: true,
+                    type: 'numericColumn',
+                    filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] },
+                    width: 125,
                 },
             ],
             rowData: rowData,
