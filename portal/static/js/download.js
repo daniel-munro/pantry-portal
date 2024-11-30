@@ -138,32 +138,35 @@ fetch('/api/traits')
     .then(traits => {
         const rowData = traits.map(trait => ({
             file: `${trait}.tar.bz2`,
-            trait: trait
+            trait: trait,
         }));
 
         var gridOptions = {
             columnDefs: [
                 { 
-                    headerName: "File", 
-                    field: "file", 
-                    sortable: true, 
+                    headerName: "File",
+                    field: "file",
+                    sortable: true,
                     filter: true,
                     filterParams: { filterOptions: ['contains', 'equals'] },
+                    flex: 1,
                     cellRenderer: params => {
                         return `<a href="/data/TWAS_associations/${params.value}" download>${params.value}</a>`;
-                    }
+                    },
                 },
                 { 
-                    headerName: "Trait", 
-                    field: "trait", 
-                    sortable: true, 
-                    filter: true, 
-                    filterParams: { filterOptions: ['contains', 'equals'] } 
+                    headerName: "Trait",
+                    field: "trait",
+                    sortable: true,
+                    filter: true,
+                    flex: 1,
+                    filterParams: { filterOptions: ['contains', 'equals'] } ,
                 },
             ],
-            rowData: rowData
+            rowData: rowData,
         };
         
         var eGridDiv = document.querySelector('#twasassoc-table');
         const gridApi = agGrid.createGrid(eGridDiv, gridOptions);
+        gridApi.sizeColumnsToFit();
     });

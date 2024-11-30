@@ -11,11 +11,11 @@ var twasGridOptions = {
         textColumn: textColumn,
     },
     columnDefs: [
-        { headerName: "Tissue", field: "tissue", type: 'textColumn' },
-        { headerName: "Trait", field: "trait", type: 'textColumn' },
-        { headerName: "Gene ID", field: "gene_id", type: 'textColumn' },
-        { headerName: "Modality", field: "modality", type: 'textColumn' },
-        { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn' },
+        { headerName: "Tissue", field: "tissue", type: 'textColumn', width: 120 },
+        { headerName: "Trait", field: "trait", type: 'textColumn', flex: 1 },
+        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', width: 190 },
+        { headerName: "Modality", field: "modality", type: 'textColumn', width: 130 },
+        { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn', flex: 1 },
         { 
             headerName: "TWAS p-value",
             field: "twas_p",
@@ -25,9 +25,10 @@ var twasGridOptions = {
                 if (params.value == null) return '';
                 return params.value.toExponential(2);
             },
-            sortable: true, 
-            filter: true, 
-            filterParams: { filterOptions: ['lessThan', 'greaterThan'], maxFiltersCount: 1 } 
+            sortable: true,
+            filter: true,
+            filterParams: { filterOptions: ['lessThan', 'greaterThan'], maxFiltersCount: 1 },
+            width: 170,
         },
     ],
     rowModelType: 'infinite',
@@ -53,7 +54,7 @@ var twasGridOptions = {
                     params.successCallback(data.rows, data.totalCount);
                 });
         }
-    }
+    },
 };
 
 var twasGridDiv = document.querySelector('#twas-hits-grid');
@@ -66,26 +67,52 @@ var qtlsGridOptions = {
         textColumn: textColumn,
     },
     columnDefs: [
-        { headerName: "Tissue", field: "tissue", type: 'textColumn' },
-        { headerName: "Gene ID", field: "gene_id", type: 'textColumn' },
-        { headerName: "Rank", field: "rank", type: 'numericColumn', cellDataType: 'number', sortable: true, filter: true, filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] } },
-        { headerName: "Modality", field: "modality", type: 'textColumn' },
-        { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn' },
-        { headerName: "Variant ID", field: "variant_id", type: 'textColumn' },
-        { headerName: "Chromosome", field: "chrom", sortable: true, filter: true, filterParams: { filterOptions: ['equals'] } },
-        { headerName: "Position", field: "pos", type: 'numericColumn', cellDataType: 'number', sortable: true, filter: true, filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] } },
+        { headerName: "Tissue", field: "tissue", type: 'textColumn', width: 120 },
+        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', width: 190 },
+        {
+            headerName: "Rank",
+            field: "rank",
+            type: 'numericColumn',
+            cellDataType: 'number',
+            sortable: true,
+            filter: true,
+            filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] },
+            width: 110,
+        },
+        { headerName: "Modality", field: "modality", type: 'textColumn', width: 130 },
+        { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn', flex: 1 },
+        { headerName: "Variant ID", field: "variant_id", type: 'textColumn', flex: 1 },
+        {
+            headerName: "Chrom",
+            field: "chrom",
+            sortable: true,
+            filter: true,
+            filterParams: { filterOptions: ['equals'] },
+            width: 115,
+        },
+        {
+            headerName: "Position",
+            field: "pos",
+            type: 'numericColumn',
+            cellDataType: 'number',
+            sortable: true,
+            filter: true,
+            filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] },
+            width: 130,
+        },
         { 
-            headerName: "P-value (beta)", 
-            field: "pval_beta", 
-            type: 'numericColumn', 
+            headerName: "P-value (beta)",
+            field: "pval_beta",
+            type: 'numericColumn',
             cellDataType: 'number',
             valueFormatter: params => {
                 if (params.value == null) return '';
                 return params.value.toExponential(2);
             },
-            sortable: true, 
-            filter: true, 
-            filterParams: { filterOptions: ['lessThan', 'greaterThan'], maxFiltersCount: 1 } 
+            sortable: true,
+            filter: true,
+            filterParams: { filterOptions: ['lessThan', 'greaterThan'], maxFiltersCount: 1 },
+            width: 165,
         },
     ],
     rowModelType: 'infinite',
@@ -111,7 +138,7 @@ var qtlsGridOptions = {
                     params.successCallback(data.rows, data.totalCount);
                 });
         }
-    }
+    },
 };
 
 var qtlsGridDiv = document.querySelector('#qtls-grid');
