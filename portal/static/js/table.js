@@ -13,7 +13,26 @@ var twasGridOptions = {
     columnDefs: [
         { headerName: "Tissue", field: "tissue", type: 'textColumn', width: 120 },
         { headerName: "Trait", field: "trait", type: 'textColumn', flex: 1 },
-        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', width: 190 },
+        { headerName: "Gene", field: "gene_name", type: 'textColumn', width: 120 },
+        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', width: 80 },
+        {
+            headerName: "Chrom",
+            field: "gene_chrom",
+            sortable: true,
+            filter: true,
+            filterParams: { filterOptions: ['equals'] },
+            width: 100,
+        },
+        {
+            headerName: "TSS",
+            field: "gene_tss",
+            type: 'numericColumn',
+            cellDataType: 'number',
+            sortable: true,
+            filter: true,
+            filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] },
+            width: 80,
+        },
         { headerName: "Modality", field: "modality", type: 'textColumn', width: 130 },
         { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn', flex: 1 },
         { 
@@ -32,6 +51,20 @@ var twasGridOptions = {
         },
     ],
     rowModelType: 'infinite',
+    onGridReady: function(params) {
+        // Add a div below the grid to show row counts
+        const gridDiv = document.querySelector('#twas-hits-grid');
+        const countDiv = document.createElement('div');
+        countDiv.style.padding = '8px';
+        countDiv.style.color = '#666';
+        gridDiv.parentNode.insertBefore(countDiv, gridDiv.nextSibling);
+
+        // Update count whenever data changes
+        params.api.addEventListener('modelUpdated', function() {
+            const rowCount = params.api.getModel().getRowCount();
+            countDiv.innerHTML = `Showing ${rowCount} rows`;
+        });
+    },
     datasource: {
         getRows: function (params) {
             // Get sort information
@@ -68,7 +101,8 @@ var qtlsGridOptions = {
     },
     columnDefs: [
         { headerName: "Tissue", field: "tissue", type: 'textColumn', width: 120 },
-        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', width: 190 },
+        { headerName: "Gene", field: "gene_name", type: 'textColumn', width: 120 },
+        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', width: 80 },
         {
             headerName: "Rank",
             field: "rank",
@@ -116,6 +150,20 @@ var qtlsGridOptions = {
         },
     ],
     rowModelType: 'infinite',
+    onGridReady: function(params) {
+        // Add a div below the grid to show row counts
+        const gridDiv = document.querySelector('#qtls-grid');
+        const countDiv = document.createElement('div');
+        countDiv.style.padding = '8px';
+        countDiv.style.color = '#666';
+        gridDiv.parentNode.insertBefore(countDiv, gridDiv.nextSibling);
+
+        // Update count whenever data changes
+        params.api.addEventListener('modelUpdated', function() {
+            const rowCount = params.api.getModel().getRowCount();
+            countDiv.innerHTML = `Showing ${rowCount} rows`;
+        });
+    },
     datasource: {
         getRows: function (params) {
             // Get sort information
