@@ -11,30 +11,34 @@ var twasGridOptions = {
         textColumn: textColumn,
     },
     columnDefs: [
-        { headerName: "Tissue", field: "tissue", type: 'textColumn', width: 120 },
-        { headerName: "Trait", field: "trait", type: 'textColumn', flex: 1 },
-        { headerName: "Gene", field: "gene_name", type: 'textColumn', width: 120 },
-        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', width: 80 },
+        { headerName: "Tissue", field: "tissue", type: 'textColumn', flex: 1 },
+        { headerName: "Trait", field: "trait", type: 'textColumn', flex: 2 },
+        { headerName: "Gene", field: "gene_name", type: 'textColumn', flex: 1 },
+        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', flex: 1 },
         {
-            headerName: "Chrom",
+            headerName: "Chrom", 
             field: "gene_chrom",
             sortable: true,
             filter: true,
             filterParams: { filterOptions: ['equals'] },
-            width: 100,
+            flex: 1,
         },
         {
             headerName: "TSS",
-            field: "gene_tss",
+            field: "gene_tss", 
             type: 'numericColumn',
             cellDataType: 'number',
+            valueFormatter: params => {
+                if (params.value == null) return '';
+                return params.value.toLocaleString();
+            },
             sortable: true,
             filter: true,
             filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] },
-            width: 80,
+            flex: 1,
         },
-        { headerName: "Modality", field: "modality", type: 'textColumn', width: 130 },
-        { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn', flex: 1 },
+        { headerName: "Modality", field: "modality", type: 'textColumn', flex: 1 },
+        { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn', flex: 2 },
         { 
             headerName: "TWAS p-value",
             field: "twas_p",
@@ -47,7 +51,7 @@ var twasGridOptions = {
             sortable: true,
             filter: true,
             filterParams: { filterOptions: ['lessThan', 'greaterThan'], maxFiltersCount: 1 },
-            width: 170,
+            flex: 1,
         },
     ],
     rowModelType: 'infinite',
@@ -61,8 +65,8 @@ var twasGridOptions = {
 
         // Update count whenever data changes
         params.api.addEventListener('modelUpdated', function() {
-            const rowCount = params.api.getModel().getRowCount();
-            countDiv.innerHTML = `Showing ${rowCount} rows`;
+            const rowCount = params.api.getDisplayedRowCount();
+            countDiv.innerHTML = `Showing ${rowCount.toLocaleString()} rows`;
         });
     },
     datasource: {
@@ -100,9 +104,9 @@ var qtlsGridOptions = {
         textColumn: textColumn,
     },
     columnDefs: [
-        { headerName: "Tissue", field: "tissue", type: 'textColumn', width: 120 },
-        { headerName: "Gene", field: "gene_name", type: 'textColumn', width: 120 },
-        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', width: 80 },
+        { headerName: "Tissue", field: "tissue", type: 'textColumn', flex: 1 },
+        { headerName: "Gene", field: "gene_name", type: 'textColumn', flex: 1 },
+        { headerName: "Gene ID", field: "gene_id", type: 'textColumn', flex: 1 },
         {
             headerName: "Rank",
             field: "rank",
@@ -111,10 +115,10 @@ var qtlsGridOptions = {
             sortable: true,
             filter: true,
             filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] },
-            width: 110,
+            flex: 1,
         },
-        { headerName: "Modality", field: "modality", type: 'textColumn', width: 130 },
-        { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn', flex: 1 },
+        { headerName: "Modality", field: "modality", type: 'textColumn', flex: 1 },
+        { headerName: "Phenotype ID", field: "phenotype_id", type: 'textColumn', flex: 2 },
         { headerName: "Variant ID", field: "variant_id", type: 'textColumn', flex: 1 },
         {
             headerName: "Chrom",
@@ -122,17 +126,21 @@ var qtlsGridOptions = {
             sortable: true,
             filter: true,
             filterParams: { filterOptions: ['equals'] },
-            width: 115,
+            flex: 1,
         },
         {
             headerName: "Position",
             field: "pos",
             type: 'numericColumn',
             cellDataType: 'number',
+            valueFormatter: params => {
+                if (params.value == null) return '';
+                return params.value.toLocaleString();
+            },
             sortable: true,
             filter: true,
             filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] },
-            width: 130,
+            flex: 1,
         },
         { 
             headerName: "P-value (beta)",
@@ -146,7 +154,7 @@ var qtlsGridOptions = {
             sortable: true,
             filter: true,
             filterParams: { filterOptions: ['lessThan', 'greaterThan'], maxFiltersCount: 1 },
-            width: 165,
+            flex: 1,
         },
     ],
     rowModelType: 'infinite',
@@ -160,8 +168,8 @@ var qtlsGridOptions = {
 
         // Update count whenever data changes
         params.api.addEventListener('modelUpdated', function() {
-            const rowCount = params.api.getModel().getRowCount();
-            countDiv.innerHTML = `Showing ${rowCount} rows`;
+            const rowCount = params.api.getDisplayedRowCount();
+            countDiv.innerHTML = `Showing ${rowCount.toLocaleString()} rows`;
         });
     },
     datasource: {
