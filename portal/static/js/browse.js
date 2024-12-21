@@ -11,7 +11,8 @@ var twasGridOptions = {
         textColumn: textColumn,
     },
     columnDefs: [
-        { headerName: "Tissue", field: "tissue", type: 'textColumn', flex: 1 },
+        { headerName: "Tissue", field: "tissue_name", type: 'textColumn', flex: 2 },
+        { headerName: "Tissue ID", field: "tissue", type: 'textColumn', flex: 1 },
         { headerName: "Trait", field: "trait", type: 'textColumn', flex: 2 },
         { headerName: "Gene", field: "gene_name", type: 'textColumn', flex: 1 },
         { headerName: "Gene ID", field: "gene_id", type: 'textColumn', flex: 1 },
@@ -104,7 +105,8 @@ var qtlsGridOptions = {
         textColumn: textColumn,
     },
     columnDefs: [
-        { headerName: "Tissue", field: "tissue", type: 'textColumn', flex: 1 },
+        { headerName: "Tissue", field: "tissue_name", type: 'textColumn', flex: 2 },
+        { headerName: "Tissue ID", field: "tissue", type: 'textColumn', flex: 1 },
         { headerName: "Gene", field: "gene_name", type: 'textColumn', flex: 1 },
         { headerName: "Gene ID", field: "gene_id", type: 'textColumn', flex: 1 },
         {

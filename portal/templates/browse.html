@@ -33,17 +33,17 @@
         </div>
     </nav>
     <div class="container-fluid">
-        <div class="container">
+        <div class="container" style="max-width: 1000px;">
             <h1 class="mt-4 mb-4 text-center">Browse</h1>
 
             <h3 class="mt-4">xTWAS hits</h3>
-            <p>TWAS associations were calculated for each set of models against summary stats for each of <a href="https://zenodo.org/records/3629742#.XjCh9OF7m90">114 GWAS traits previously harmonized to GTEx v8 variant reference</a> using <a href="https://github.com/gusevlab/fusion_twas">FUSION</a>. Each transcriptional phenotype was tested for association with each trait, and associations were filtered with a genome-wide P-value threshold, adjusted for number of RNA modalities, of 8.33e-9 (5e-8 / 6).</p>
+            <p>A TWAS transcriptional model was computed for each RNA phenotype in each GTEx tissue, and TWAS was performed using <a href="https://github.com/gusevlab/fusion_twas">FUSION</a> and summary stats for each of <a href="https://zenodo.org/records/3629742#.XjCh9OF7m90">114 GWAS traits previously harmonized to GTEx v8 variant reference</a>. Associations between all RNA phenotypes and all traits in each tissue were filtered with a genome-wide P-value threshold, adjusted for number of RNA modalities, of 8.33e-9 (5e-8 / 6).</p>
         </div>
         <div id="twas-hits-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
 
-        <div class="container">
+        <div class="container" style="max-width: 1000px;">
             <h3 class="mt-4">cis-xQTLs</h3>
-            <p">cis-xQTLs were mapped for each tissue using cross-modality mapping, so they are conditionally independent, even across modalities, within each tissue-gene pair. They are ranked in the order of discovery using stepwise regression per tissue-gene pair, which roughly corresponds to association strength. Only the top variant per QTL is shown, which is not necessarily the causal variant.</p>
+            <p">cis-xQTLs were mapped for each GTEx tissue using <a href="https://github.com/broadinstitute/tensorqtl">tensorQTL</a> and Pantry's cross-modality mapping technique, so they are conditionally independent, even across modalities, within each tissue-gene pair. They are ranked in the order of discovery using stepwise regression per tissue-gene pair, which roughly corresponds to descending association strength. Only the top variant per QTL is shown, which is not necessarily the causal variant.</p>
         </div>
         <div id="qtls-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
     </div>
