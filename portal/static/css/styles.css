@@ -1,0 +1,38 @@
+/* Navbar link visibility adjustments */
+/* Make links solid white by default (Bootstrap "navbar-dark" uses semi-transparent white) */
+.navbar-dark .navbar-nav .nav-link {
+	color: #ffffff; /* full white */
+	opacity: 1; /* ensure no inherited opacity */
+	transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+}
+
+/* On hover/focus, slightly dim them so the interaction is noticeable */
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+	color: rgba(255,255,255,0.70); /* or use #d9d9d9 for a solid gray */
+}
+
+/* Keep the active link fully white for clarity */
+.navbar-dark .navbar-nav .nav-link.active, 
+.navbar-dark .navbar-nav .nav-link.show {
+	color: #ffffff;
+}
+
+/* Logo sizing */
+.logo-hero {
+	max-width: 400px;
+	width: 50%;
+	height: auto;
+}
+
+@media (max-width: 575.98px) {
+	.logo-hero { width: 80%; }
+}
+
+/* Constrain width of long-form paragraphs on landing page */
+.limited-text {
+	max-width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
