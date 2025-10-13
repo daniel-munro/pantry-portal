@@ -20,16 +20,20 @@ const modalities = [
     { id: 'isoforms', label: 'Isoform ratio' },
     { id: 'splicing', label: 'Intron excision ratio' },
     { id: 'stability', label: 'RNA stability' },
+    { id: 'latent_residual', label: 'Residual data-driven' },
+    { id: 'latent_full', label: 'Full data-driven' },
 ];
 
-const modalities_combined = [
+const modalities_qtls = [
     { id: 'alt_polyA', label: 'Alternative polyA' },
     { id: 'alt_TSS', label: 'Alternative TSS' },
     { id: 'expression', label: 'Expression' },
     { id: 'isoforms', label: 'Isoform ratio' },
     { id: 'splicing', label: 'Intron excision ratio' },
     { id: 'stability', label: 'RNA stability' },
-    { id: 'combined', label: 'Combined' }
+    { id: 'latent_full', label: 'Full data-driven' },
+    { id: 'cross_modality_kdp', label: 'Cross-modality knowledge-driven' },
+    { id: 'cross_modality_hybrid', label: 'Cross-modality hybrid' },
 ];
 
 
@@ -40,10 +44,10 @@ document.getElementById('rnaphenos-tissue-select').addEventListener('change', fu
     tableBody.innerHTML = '';
 
     modalities.forEach(mod => {
-        const fileName = `${tissue}.${mod.id}.unnorm.bed.gz`;
+        const fileName = `${tissue}.${mod.id}.bed.gz`;
         const row = `
             <tr>
-                <td><a href="/data/RNA_phenotypes/${fileName}" download>${fileName}</a></td>
+                <td><a href="/data/rna_phenotypes/${fileName}" download>${fileName}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
@@ -57,7 +61,7 @@ document.getElementById('covariates-tissue-select').addEventListener('change', f
     const tableBody = document.getElementById('covariates-table-body');
     tableBody.innerHTML = '';
 
-    modalities_combined.forEach(mod => {
+    modalities_qtls.forEach(mod => {
         const fileName = `${tissue}.${mod.id}.covar.tsv`;
         const row = `
             <tr>
@@ -85,12 +89,13 @@ document.getElementById('covariates-tissue-select').addEventListener('change', f
 document.getElementById('qtls-tissue-select').addEventListener('change', function() {
     const tissue = this.value;
     const tableBody = document.getElementById('qtls-table-body');
+    tableBody.innerHTML = '';
 
-    modalities_combined.forEach(mod => {
+    modalities_qtls.forEach(mod => {
         const fileName1 = `${tissue}.${mod.id}.cis_qtl.txt.gz`;
         const row1 = `
             <tr>
-                <td><a href="/data/QTLs/${fileName1}" download>${fileName1}</a></td>
+                <td><a href="/data/qtls/${fileName1}" download>${fileName1}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
@@ -98,7 +103,7 @@ document.getElementById('qtls-tissue-select').addEventListener('change', functio
         const fileName2 = `${tissue}.${mod.id}.cis_independent_qtl.txt.gz`;
         const row2 = `
             <tr>
-                <td><a href="/data/QTLs/${fileName2}" download>${fileName2}</a></td>
+                <td><a href="/data/qtls/${fileName2}" download>${fileName2}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
@@ -116,7 +121,7 @@ document.getElementById('twasmodels-tissue-select').addEventListener('change', f
         const fileName1 = `${tissue}.${mod.id}.twas_weights.tar.bz2`;
         const row1 = `
             <tr>
-                <td><a href="/data/TWAS_weights/${fileName1}" download>${fileName1}</a></td>
+                <td><a href="/data/twas_weights/${fileName1}" download>${fileName1}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
@@ -124,7 +129,7 @@ document.getElementById('twasmodels-tissue-select').addEventListener('change', f
         const fileName2 = `${tissue}.${mod.id}.twas_weights.profile`;
         const row2 = `
             <tr>
-                <td><a href="/data/TWAS_weights/${fileName2}" download>${fileName2}</a></td>
+                <td><a href="/data/twas_weights/${fileName2}" download>${fileName2}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
@@ -154,7 +159,7 @@ fetch('/api/traits')
                     filterParams: { filterOptions: ['contains', 'equals'] },
                     flex: 1,
                     cellRenderer: params => {
-                        return `<a href="/data/TWAS_associations/${params.value}" download>${params.value}</a>`;
+                        return `<a href="/data/twas_associations/${params.value}" download>${params.value}</a>`;
                     },
                 },
                 { 

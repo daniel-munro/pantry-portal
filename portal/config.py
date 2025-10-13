@@ -12,7 +12,7 @@ if not os.path.isabs(DATA_DIR):
 DB_PATH = os.path.join(DATA_DIR, 'data.db')
 DATABASE_URI = f'sqlite:///{DB_PATH}'
 
-with open(os.path.join(DATA_DIR, 'info/tissues.pheast.txt'), 'r') as f:
+with open(os.path.join(DATA_DIR, 'info/tissues.txt'), 'r') as f:
     TISSUES = [line.strip() for line in f.readlines()]
 
 TRAITS = pd.read_csv(
