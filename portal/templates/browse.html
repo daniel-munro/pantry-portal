@@ -36,16 +36,61 @@
         <div class="container" style="max-width: 1000px;">
             <h1 class="mt-4 mb-4 text-center">Browse</h1>
 
-            <h3 class="mt-4">xTWAS hits</h3>
+            <!-- Navigation -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Quick Navigation</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6><a href="#twas" class="text-decoration-none">xTWAS hits</a></h6>
+                                    <ul class="list-unstyled ms-3">
+                                        <li><a href="#twas-hybrid" class="text-decoration-none">Hybrid</a></li>
+                                        <li><a href="#twas-ddp" class="text-decoration-none">Data-driven</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6><a href="#qtls" class="text-decoration-none">cis-xQTLs</a></h6>
+                                    <ul class="list-unstyled ms-3">
+                                        <li><a href="#qtls-hybrid" class="text-decoration-none">Hybrid</a></li>
+                                        <li><a href="#qtls-ddp" class="text-decoration-none">Data-driven</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 id="twas" class="mt-4">xTWAS hits</h2>
             <p>A TWAS transcriptional model was computed for each RNA phenotype in each GTEx tissue, and TWAS was performed using <a href="https://github.com/gusevlab/fusion_twas">FUSION</a> and summary stats for each of <a href="https://zenodo.org/records/3629742#.XjCh9OF7m90">114 GWAS traits previously harmonized to GTEx v8 variant reference</a>. Associations between all RNA phenotypes and all traits in each tissue were filtered with a genome-wide P-value threshold of 5e-8.</p>
+
+            <h4 id="twas-hybrid" class="mt-4">Knowledge-driven and residual data-driven phenotypes</h4>
+            <p>Results for all six modalities of RNA phenotypes generated with Pantry, plus residual data-driven phenotypes generated with LaDDR.</p>
         </div>
-        <div id="twas-hits-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
+        <div id="twas-hybrid-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
 
         <div class="container" style="max-width: 1000px;">
-            <h3 class="mt-4">cis-xQTLs</h3>
-            <p">cis-xQTLs were mapped for each GTEx tissue using <a href="https://github.com/broadinstitute/tensorqtl">tensorQTL</a> and Pantry's cross-modality mapping technique, so they are conditionally independent, even across modalities, within each tissue-gene pair. They are ranked in the order of discovery using stepwise regression per tissue-gene pair, which roughly corresponds to descending association strength. Only the top variant per QTL is shown, which is not necessarily the causal variant.</p>
+            <h4 id="twas-ddp" class="mt-4">Data-driven phenotypes</h4>
+            <p>Results for xTWAS on full data-driven phenotypes generated with LaDDR.</p>
         </div>
-        <div id="qtls-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
+        <div id="twas-ddp-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
+
+        <div class="container" style="max-width: 1000px;">
+            <h2 id="qtls" class="mt-4">cis-xQTLs</h2>
+            <p>cis-xQTLs were mapped for each GTEx tissue using <a href="https://github.com/broadinstitute/tensorqtl">tensorQTL</a> and Pantry's cross-modality mapping technique, so they are conditionally independent, even across modalities, within each tissue-gene pair. They are ranked in the order of discovery using stepwise regression per tissue-gene pair, which roughly corresponds to descending association strength. Only the top variant per QTL is shown, which is not necessarily the causal variant.</p>
+
+            <h4 id="qtls-hybrid" class="mt-4">Knowledge-driven and residual data-driven phenotypes</h4>
+            <p>cis-xQTLs from hybrid mapping of all six modalities of RNA phenotypes generated with Pantry, plus residual data-driven phenotypes generated with LaDDR.</p>
+        </div>
+        <div id="qtls-hybrid-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
+
+        <div class="container" style="max-width: 1000px;">
+            <h4 id="qtls-ddp" class="mt-4">Data-driven phenotypes</h4>
+            <p>cis-xQTLs for full data-driven phenotypes generated with LaDDR.</p>
+        </div>
+        <div id="qtls-ddp-grid" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
     </div>
 </body>
 </html>

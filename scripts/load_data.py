@@ -44,9 +44,8 @@ def load_trait_info(tsv_file: str) -> pd.DataFrame:
     df.set_index('id', inplace=True)
     return df
 
-def load_twas_results(tsv_file: str, genes: pd.DataFrame, tissues: pd.DataFrame, traits: pd.DataFrame, modality_map: dict, engine: Engine) -> None:
+def load_twas_hybrid(tsv_file: str, genes: pd.DataFrame, tissues: pd.DataFrame, traits: pd.DataFrame, modality_map: dict, engine: Engine) -> None:
     df = pd.read_csv(tsv_file, sep='\t', usecols=['tissue', 'TRAIT', 'modality', 'ID', 'TWAS.P'])
-    # Extract gene_id from ID (format: {gene_id}__{etc})
     df['gene_id'] = df['ID'].str.split('__').str[0]
     df = df.rename(columns={'TWAS.P': 'twas_p', 'ID': 'phenotype_id', 'TRAIT': 'trait'})
     df = df[['tissue', 'trait', 'gene_id', 'modality', 'phenotype_id', 'twas_p']]
@@ -58,9 +57,24 @@ def load_twas_results(tsv_file: str, genes: pd.DataFrame, tissues: pd.DataFrame,
         on='gene_id',
         how='inner'
     )
-    df.to_sql('twas_result', engine, if_exists='fail', index=True, index_label='id')
+    df.to_sql('twas_hybrid', engine, if_exists='fail', index=True, index_label='id')
 
-def load_qtls_combined(tsv_file: str, genes: pd.DataFrame, tissues: pd.DataFrame, modality_map: dict, engine: Engine) -> None:
+def load_twas_ddp(tsv_file: str, genes: pd.DataFrame, tissues: pd.DataFrame, traits: pd.DataFrame, engine: Engine) -> None:
+    df = pd.read_csv(tsv_file, sep='\t', usecols=['tissue', 'TRAIT', 'ID', 'TWAS.P'])
+    df[['gene_id', 'ddp']] = df['ID'].str.split('__PC', n=1, expand=True)
+    df['ddp'] = df['ddp'].astype(int)
+    df = df.rename(columns={'TWAS.P': 'twas_p', 'TRAIT': 'trait'})
+    df = df[['tissue', 'trait', 'gene_id', 'ddp', 'twas_p']]
+    df = df.merge(tissues, on='tissue', how='left')
+    df['trait'] = df['trait'].map(traits['name'])
+    df = df.merge(
+        genes[['gene_id', 'gene_name', 'gene_chrom', 'gene_tss']], 
+        on='gene_id',
+        how='inner'
+    )
+    df.to_sql('twas_ddp', engine, if_exists='fail', index=True, index_label='id')
+
+def load_qtls_hybrid(tsv_file: str, genes: pd.DataFrame, tissues: pd.DataFrame, modality_map: dict, engine: Engine) -> None:
     df = pd.read_csv(tsv_file, sep='\t', usecols=['tissue', 'group_id', 'rank', 'modality', 'phenotype_id', 'variant_id', 'pval_beta'])
     df = df.rename(columns={'group_id': 'gene_id'})
     df[['chrom', 'pos']] = df['variant_id'].str.split('_', n=2, expand=True).iloc[:, :2]
@@ -72,7 +86,21 @@ def load_qtls_combined(tsv_file: str, genes: pd.DataFrame, tissues: pd.DataFrame
         on='gene_id',
         how='inner'
     )
-    df.to_sql('qtls_combined', engine, if_exists='fail', index=True, index_label='id')
+    df.to_sql('qtls_hybrid', engine, if_exists='fail', index=True, index_label='id')
+
+def load_qtls_ddp(tsv_file: str, genes: pd.DataFrame, tissues: pd.DataFrame, engine: Engine) -> None:
+    df = pd.read_csv(tsv_file, sep='\t', usecols=['tissue', 'group_id', 'rank', 'phenotype_id', 'variant_id', 'pval_beta'])
+    df['phenotype_id'] = df['phenotype_id'].str.split('__PC').str[1].astype(int)
+    df = df.rename(columns={'group_id': 'gene_id', 'phenotype_id': 'ddp'})
+    df[['chrom', 'pos']] = df['variant_id'].str.split('_', n=2, expand=True).iloc[:, :2]
+    df['pos'] = df['pos'].astype(int)
+    df = df.merge(tissues, on='tissue', how='left')
+    df = df.merge(
+        genes[['gene_id', 'gene_name']], 
+        on='gene_id',
+        how='inner'
+    )
+    df.to_sql('qtls_ddp', engine, if_exists='fail', index=True, index_label='id')
 
 engine = create_engine('sqlite:///data/data.db')
 modality_map = {
@@ -89,5 +117,7 @@ if __name__ == '__main__':
     genes = load_gene_info('data/info/Homo_sapiens.GRCh38.113.chr.chrom.gtf.gz')
     tissues = load_tissue_info('data/info/tissueInfo.tsv')
     traits = load_trait_info('data/info/gwas_metadata.txt')
-    load_twas_results('data/processed/gtex.kdp_rddp.twas_hits.tsv.gz', genes, tissues, traits, modality_map, engine)
-    load_qtls_combined('data/processed/gtex.cross_modality_hybrid.qtls.tsv.gz', genes, tissues, modality_map, engine)
+    load_twas_hybrid('data/processed/gtex.kdp_rddp.twas_hits.tsv.gz', genes, tissues, traits, modality_map, engine)
+    load_twas_ddp('data/processed/gtex.ddp.twas_hits.tsv.gz', genes, tissues, traits, engine)
+    load_qtls_hybrid('data/processed/gtex.cross_modality_hybrid.qtls.tsv.gz', genes, tissues, modality_map, engine)
+    load_qtls_ddp('data/processed/gtex.ddp.qtls.tsv.gz', genes, tissues, engine)

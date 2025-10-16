@@ -13,12 +13,22 @@ def init_api_routes(app, engine):
     def get_traits():
         return jsonify(TRAITS)
 
-    @app.route('/api/twas', methods=['GET'])
+    @app.route('/api/twas-hybrid', methods=['GET'])
     def get_twas():
-        response = ag_grid_query(engine, 'twas_result', request)
+        response = ag_grid_query(engine, 'twas_hybrid', request)
         return jsonify(response)
 
-    @app.route('/api/qtls-combined', methods=['GET'])
-    def get_qtls_combined():
-        response = ag_grid_query(engine, 'qtls_combined', request)
+    @app.route('/api/twas-ddp', methods=['GET'])
+    def get_twas_ddp():
+        response = ag_grid_query(engine, 'twas_ddp', request)
+        return jsonify(response)
+
+    @app.route('/api/qtls-hybrid', methods=['GET'])
+    def get_qtls_hybrid():
+        response = ag_grid_query(engine, 'qtls_hybrid', request)
+        return jsonify(response)
+
+    @app.route('/api/qtls-ddp', methods=['GET'])
+    def get_qtls_ddp():
+        response = ag_grid_query(engine, 'qtls_ddp', request)
         return jsonify(response)
