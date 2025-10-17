@@ -3,6 +3,46 @@
 import json
 import sqlalchemy as db
 from flask import Request
+from portal.config import TRAITS
+
+def get_trait_hits(engine: db.engine.Engine, trait_id: str) -> list:
+    """Get all TWAS hits for a specific trait."""
+    conn = engine.connect()
+    
+    # Find the trait name from the trait ID
+    trait_name = None
+    for trait in TRAITS:
+        if trait['id'] == trait_id:
+            trait_name = trait['name']
+            break
+    
+    if not trait_name:
+        conn.close()
+        return []
+    
+    # Query the twas_hybrid table for the given trait name
+    table = db.Table('twas_hybrid', db.MetaData(), autoload_with=engine)
+    query = db.select(table).where(table.c.trait == trait_name)
+    
+    result = conn.execute(query).fetchall()
+    hits = [dict(row._mapping) for row in result]
+    
+    conn.close()
+    return hits
+
+def get_gene_hits(engine: db.engine.Engine, gene_id: str) -> list:
+    """Get all TWAS hits for a specific gene."""
+    conn = engine.connect()
+    
+    # Query the twas_hybrid table for the given gene_id
+    table = db.Table('twas_hybrid', db.MetaData(), autoload_with=engine)
+    query = db.select(table).where(table.c.gene_id == gene_id)
+    
+    result = conn.execute(query).fetchall()
+    hits = [dict(row._mapping) for row in result]
+    
+    conn.close()
+    return hits
 
 def ag_grid_query(engine: db.engine.Engine, table_name: str, request: Request) -> dict:
     conn = engine.connect()
@@ -21,8 +61,14 @@ def ag_grid_query(engine: db.engine.Engine, table_name: str, request: Request) -
     if filter_model:
         filter_model = json.loads(filter_model)
         for field, filter_params in filter_model.items():
+            # Handle custom select filter (multi-select checkbox)
+            if filter_params.get('filterType') == 'select':
+                selected_values = filter_params.get('values', [])
+                if selected_values:
+                    query = query.where(getattr(table.c, field).in_(selected_values))
+            
             # Handle single filter condition
-            if 'type' in filter_params:
+            elif 'type' in filter_params:
                 filter_type = filter_params['type']
                 filter_value = filter_params['filter']
                 

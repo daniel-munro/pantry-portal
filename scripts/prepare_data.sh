@@ -340,8 +340,9 @@ gzip -c ../laddr/twas/output/twas_hits.geuvadis-full-Geuvadis.tsv > data/process
     done < ../laddr/data/gtex/tissues.gtex.txt
 } | gzip > data/processed/gtex.ddp.twas_hits.tsv.gz
 
-####################
-## Build database ##
-####################
+######################################
+## Build database and compute stats ##
+######################################
 
 python3 scripts/load_data.py
+python3 scripts/compute_stats.py

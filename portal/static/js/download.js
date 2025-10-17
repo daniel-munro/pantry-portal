@@ -174,8 +174,15 @@ fetch('/api/traits')
                     headerName: "Category", 
                     field: "category",
                     sortable: true,
-                    filter: true,
-                    filterParams: { filterOptions: ['contains', 'equals'] },
+                    filter: SelectFilter,
+                    filterParams: {
+                        values: [
+                            'Aging', 'Allergy', 'Anthropometric', 'Blood', 'Cancer',
+                            'Cardiometabolic', 'Digestive system disease',
+                            'Endocrine system', 'Hair morphology', 'Immune',
+                            'Psychiatric-neurologic', 'Skeletal system disease',
+                        ]
+                    },
                     width: 240,
                     cellRenderer: params => {
                         const circle = `<span style="
