@@ -2,7 +2,7 @@
 
 from flask import jsonify, request
 from portal.config import TISSUES, TRAITS, GENES
-from portal.services.query_service import ag_grid_query, get_trait_hits, get_gene_hits
+from portal.services.query_service import ag_grid_query, get_trait_hits, get_gene_hits, get_gene_qtls
 
 def init_api_routes(app, engine):
     @app.route('/api/tissues')
@@ -26,6 +26,11 @@ def init_api_routes(app, engine):
     def get_gene_hits_api(gene_id):
         hits = get_gene_hits(engine, gene_id)
         return jsonify({'hits': hits})
+
+    @app.route('/api/gene-qtls/<gene_id>')
+    def get_gene_qtls_api(gene_id):
+        qtls = get_gene_qtls(engine, gene_id)
+        return jsonify({'qtls': qtls})
 
     @app.route('/api/twas-hybrid', methods=['GET'])
     def get_twas():

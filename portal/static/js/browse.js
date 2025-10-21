@@ -7,6 +7,12 @@ const textColumn = {
 
 // Reusable column definitions
 const COLUMNS = {
+    trait: {
+        headerName: "Trait",
+        field: "trait",
+        type: 'textColumn',
+        flex: 2
+    },
     tissue_name: {
         headerName: "Tissue",
         field: "tissue_name",
@@ -54,12 +60,6 @@ const COLUMNS = {
             ]
         },
         flex: 1
-    },
-    trait: {
-        headerName: "Trait",
-        field: "trait",
-        type: 'textColumn',
-        flex: 2
     },
     gene_name: {
         headerName: "Gene",
@@ -220,9 +220,9 @@ var twasHybridGridOptions = {
         textColumn: textColumn,
     },
     columnDefs: [
+        COLUMNS.trait,
         COLUMNS.tissue_name,
         COLUMNS.tissue,
-        COLUMNS.trait,
         COLUMNS.gene_name,
         COLUMNS.gene_id,
         COLUMNS.gene_chrom,
@@ -281,9 +281,9 @@ var twasDdpGridOptions = {
         textColumn: textColumn,
     },
     columnDefs: [
+        COLUMNS.trait,
         COLUMNS.tissue_name,
         COLUMNS.tissue,
-        COLUMNS.trait,
         COLUMNS.gene_name,
         COLUMNS.gene_id,
         COLUMNS.gene_chrom,

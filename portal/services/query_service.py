@@ -44,6 +44,20 @@ def get_gene_hits(engine: db.engine.Engine, gene_id: str) -> list:
     conn.close()
     return hits
 
+def get_gene_qtls(engine: db.engine.Engine, gene_id: str) -> list:
+    """Get all xQTLs for a specific gene."""
+    conn = engine.connect()
+    
+    # Query the qtls_hybrid table for the given gene_id
+    table = db.Table('qtls_hybrid', db.MetaData(), autoload_with=engine)
+    query = db.select(table).where(table.c.gene_id == gene_id)
+    
+    result = conn.execute(query).fetchall()
+    qtls = [dict(row._mapping) for row in result]
+    
+    conn.close()
+    return qtls
+
 def ag_grid_query(engine: db.engine.Engine, table_name: str, request: Request) -> dict:
     conn = engine.connect()
     limit = request.args.get('limit', 50, type=int)

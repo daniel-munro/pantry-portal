@@ -52,13 +52,13 @@ def compute_trait_stats():
 
 def compute_gene_stats():
     """
-    Compute statistics for each gene from the twas_hybrid table.
+    Compute statistics for each gene from the twas_hybrid and qtls_hybrid tables.
     Returns a dictionary with gene_ids as keys and stats as values.
     """
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    # Query to compute hits and unique traits per gene
+    # Query to compute hits and unique traits per gene from TWAS
     query = """
     SELECT 
         gene_id,
@@ -70,16 +70,41 @@ def compute_gene_stats():
     
     cursor.execute(query)
     results = cursor.fetchall()
-    conn.close()
     
     # Convert to dictionary
     stats = {}
     for gene_id, hits, traits in results:
         stats[gene_id] = {
             "hits": hits,
-            "traits": traits
+            "traits": traits,
+            "qtls": 0  # Initialize qtls count
         }
     
+    # Query to compute xQTL counts per gene
+    qtl_query = """
+    SELECT 
+        gene_id,
+        COUNT(*) as qtls
+    FROM qtls_hybrid
+    GROUP BY gene_id
+    """
+    
+    cursor.execute(qtl_query)
+    qtl_results = cursor.fetchall()
+    
+    # Add qtl counts to stats, creating entries for genes that only have qtls
+    for gene_id, qtls in qtl_results:
+        if gene_id in stats:
+            stats[gene_id]["qtls"] = qtls
+        else:
+            # Gene has qtls but no TWAS hits
+            stats[gene_id] = {
+                "hits": 0,
+                "traits": 0,
+                "qtls": qtls
+            }
+    
+    conn.close()
     return stats
 
 
@@ -115,7 +140,7 @@ def main():
     
     print("\nExample gene stats:")
     for i, (gene_id, data) in enumerate(list(gene_stats.items())[:5]):
-        print(f"  {gene_id}: {data['hits']} hits, {data['traits']} traits")
+        print(f"  {gene_id}: {data['hits']} hits, {data['traits']} traits, {data['qtls']} qtls")
         if i >= 4:
             break
 

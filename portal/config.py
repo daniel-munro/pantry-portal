@@ -56,5 +56,6 @@ with open(os.path.join(DATA_DIR, 'gene_stats.json'), 'r') as f:
     gene_stats = json.load(f)
 GENES['hits'] = GENES['id'].map(lambda x: gene_stats.get(x, {}).get('hits', 0))
 GENES['traits'] = GENES['id'].map(lambda x: gene_stats.get(x, {}).get('traits', 0))
+GENES['qtls'] = GENES['id'].map(lambda x: gene_stats.get(x, {}).get('qtls', 0))
 
 GENES = GENES.to_dict('records')

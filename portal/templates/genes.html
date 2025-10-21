@@ -47,15 +47,55 @@
             <p>Only autosomal protein-coding and lncRNA genes were tested for xQTLs and xTWAS associations.</p>
             
             <h3>Select a Gene</h3>
+
+            <p>Search using the Name or ID column filter and select to show info and results for the gene.</p>
         </div>
         <div id="genes-table" style="height: 500px; width: 100%;" class="ag-theme-alpine mb-4"></div>
 
-        <div class="container" style="max-width: 1000px;">
-            <div id="hits-section" style="display: none;">
-                <h3 id="selected-gene-title">xTWAS Hits</h3>
+        <!-- Gene Details Section -->
+        <div id="gene-details-section" style="display: none;">
+            <div class="container" style="max-width: 1000px;">
+                <h2 id="gene-details-title" class="mt-4 mb-3"></h2>
+                
+                <!-- Gene Information Card -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Gene Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Gene ID:</strong> <span id="gene-info-id"></span></p>
+                                <p class="mb-2"><strong>Gene Name:</strong> <span id="gene-info-name"></span></p>
+                                <p class="mb-2"><strong>Type:</strong> <span id="gene-info-biotype"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Chromosome:</strong> <span id="gene-info-chrom"></span></p>
+                                <p class="mb-2"><strong>Coordinates:</strong> <span id="gene-info-coords"></span></p>
+                                <p class="mb-2"><strong>Strand:</strong> <span id="gene-info-strand"></span></p>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>xTWAS Hits:</strong> <span id="gene-info-hits"></span></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Unique associated traits:</strong> <span id="gene-info-traits"></span></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>xQTLs:</strong> <span id="gene-info-qtls"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mt-4 mb-3">xTWAS Hits</h3>
             </div>
+            <div id="hits-table" style="height: 600px; width: 100%;" class="ag-theme-alpine mb-4"></div>
+
+            <div class="container" style="max-width: 1000px;">
+                <h3 class="mt-4 mb-3">xQTLs</h3>
+            </div>
+            <div id="qtls-table" style="height: 600px; width: 100%;" class="ag-theme-alpine mb-4"></div>
         </div>
-        <div id="hits-table" style="height: 600px; width: 100%; display: none;" class="ag-theme-alpine"></div>
     </div>
 
 </body>
