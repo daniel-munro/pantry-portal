@@ -1,216 +1,238 @@
 // Populate tissue select dropdown
-fetch('/api/tissues')
-    .then(response => response.json())
-    .then(tissues => {
-        ['rnaphenos-tissue-select', 'covariates-tissue-select', 'qtls-tissue-select', 'twasmodels-tissue-select'].forEach(selectId => {
-            const tissueSelect = document.getElementById(selectId);
-            tissueSelect.innerHTML = tissues
-                .map(tissue => `<option value="${tissue}">${tissue}</option>`)
-                .join('');
-            
-            // Trigger change event after populating options
-            tissueSelect.dispatchEvent(new Event('change'));
-        });
+fetch("/api/tissues")
+  .then((response) => response.json())
+  .then((tissues) => {
+    [
+      "rnaphenos-tissue-select",
+      "covariates-tissue-select",
+      "qtls-tissue-select",
+      "twasmodels-tissue-select",
+    ].forEach((selectId) => {
+      const tissueSelect = document.getElementById(selectId);
+      tissueSelect.innerHTML = tissues
+        .map((tissue) => `<option value="${tissue}">${tissue}</option>`)
+        .join("");
+
+      // Trigger change event after populating options
+      tissueSelect.dispatchEvent(new Event("change"));
     });
+  });
 
 const modalities = [
-    { id: 'alt_polyA', label: 'Alternative polyA' },
-    { id: 'alt_TSS', label: 'Alternative TSS' },
-    { id: 'expression', label: 'Expression' },
-    { id: 'isoforms', label: 'Isoform ratio' },
-    { id: 'splicing', label: 'Intron excision ratio' },
-    { id: 'stability', label: 'RNA stability' },
-    { id: 'latent_residual', label: 'Residual data-driven' },
-    { id: 'latent_full', label: 'Full data-driven' },
+  { id: "alt_polyA", label: "Alternative polyA" },
+  { id: "alt_TSS", label: "Alternative TSS" },
+  { id: "expression", label: "Expression" },
+  { id: "isoforms", label: "Isoform ratio" },
+  { id: "splicing", label: "Intron excision ratio" },
+  { id: "stability", label: "RNA stability" },
+  { id: "latent_residual", label: "Residual data-driven" },
+  { id: "latent_full", label: "Full data-driven" },
 ];
 
 const modalities_qtls = [
-    { id: 'alt_polyA', label: 'Alternative polyA' },
-    { id: 'alt_TSS', label: 'Alternative TSS' },
-    { id: 'expression', label: 'Expression' },
-    { id: 'isoforms', label: 'Isoform ratio' },
-    { id: 'splicing', label: 'Intron excision ratio' },
-    { id: 'stability', label: 'RNA stability' },
-    { id: 'latent_full', label: 'Full data-driven' },
-    { id: 'cross_modality_kdp', label: 'Cross-modality knowledge-driven' },
-    { id: 'cross_modality_hybrid', label: 'Cross-modality hybrid' },
+  { id: "alt_polyA", label: "Alternative polyA" },
+  { id: "alt_TSS", label: "Alternative TSS" },
+  { id: "expression", label: "Expression" },
+  { id: "isoforms", label: "Isoform ratio" },
+  { id: "splicing", label: "Intron excision ratio" },
+  { id: "stability", label: "RNA stability" },
+  { id: "latent_full", label: "Full data-driven" },
+  { id: "cross_modality_kdp", label: "Cross-modality knowledge-driven" },
+  { id: "cross_modality_hybrid", label: "Cross-modality hybrid" },
 ];
 
-
 // Build RNA phenotypes table
-document.getElementById('rnaphenos-tissue-select').addEventListener('change', function() {
+document
+  .getElementById("rnaphenos-tissue-select")
+  .addEventListener("change", function () {
     const tissue = this.value;
-    const tableBody = document.getElementById('rnaphenos-table-body');
-    tableBody.innerHTML = '';
+    const tableBody = document.getElementById("rnaphenos-table-body");
+    tableBody.innerHTML = "";
 
-    modalities.forEach(mod => {
-        const fileName = `${tissue}.${mod.id}.bed.gz`;
-        const row = `
+    modalities.forEach((mod) => {
+      const fileName = `${tissue}.${mod.id}.bed.gz`;
+      const row = `
             <tr>
                 <td><a href="/data/rna_phenotypes/${fileName}" download>${fileName}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
-        tableBody.innerHTML += row;
+      tableBody.innerHTML += row;
     });
-});
+  });
 
 // Build covariates table
-document.getElementById('covariates-tissue-select').addEventListener('change', function() {
+document
+  .getElementById("covariates-tissue-select")
+  .addEventListener("change", function () {
     const tissue = this.value;
-    const tableBody = document.getElementById('covariates-table-body');
-    tableBody.innerHTML = '';
+    const tableBody = document.getElementById("covariates-table-body");
+    tableBody.innerHTML = "";
 
-    modalities_qtls.forEach(mod => {
-        const fileName = `${tissue}.${mod.id}.covar.tsv`;
-        const row = `
-            <tr>
-                <td><a href="/data/covariates/${fileName}" download>${fileName}</a></td>
-                <td>${mod.label}</td>
-                <td>tensorQTL</td>
-            </tr>
-        `;
-        tableBody.innerHTML += row;
+    modalities_qtls.forEach((mod) => {
+      const fileName = `${tissue}.${mod.id}.covar.tsv`;
+      const row = `
+        <tr>
+          <td><a href="/data/covariates/${fileName}" download>${fileName}</a></td>
+          <td>${mod.label}</td>
+          <td>tensorQTL</td>
+        </tr>
+      `;
+      tableBody.innerHTML += row;
     });
-    modalities.forEach(mod => {
-        const fileName = `${tissue}.${mod.id}.covar.plink.tsv`;
-        const row = `
-            <tr>
-                <td><a href="/data/covariates/${fileName}" download>${fileName}</a></td>
-                <td>${mod.label}</td>
-                <td>PLINK</td>
-            </tr>
-        `;
-        tableBody.innerHTML += row;
+    modalities.forEach((mod) => {
+      const fileName = `${tissue}.${mod.id}.covar.plink.tsv`;
+      const row = `
+        <tr>
+          <td><a href="/data/covariates/${fileName}" download>${fileName}</a></td>
+          <td>${mod.label}</td>
+          <td>PLINK</td>
+        </tr>
+      `;
+      tableBody.innerHTML += row;
     });
-});
+  });
 
 // Build xQTLs table
-document.getElementById('qtls-tissue-select').addEventListener('change', function() {
+document
+  .getElementById("qtls-tissue-select")
+  .addEventListener("change", function () {
     const tissue = this.value;
-    const tableBody = document.getElementById('qtls-table-body');
-    tableBody.innerHTML = '';
+    const tableBody = document.getElementById("qtls-table-body");
+    tableBody.innerHTML = "";
 
-    modalities_qtls.forEach(mod => {
-        const fileName1 = `${tissue}.${mod.id}.cis_qtl.txt.gz`;
-        const row1 = `
+    modalities_qtls.forEach((mod) => {
+      const fileName1 = `${tissue}.${mod.id}.cis_qtl.txt.gz`;
+      const row1 = `
             <tr>
                 <td><a href="/data/qtls/${fileName1}" download>${fileName1}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
-        tableBody.innerHTML += row1;
-        const fileName2 = `${tissue}.${mod.id}.cis_independent_qtl.txt.gz`;
-        const row2 = `
+      tableBody.innerHTML += row1;
+      const fileName2 = `${tissue}.${mod.id}.cis_independent_qtl.txt.gz`;
+      const row2 = `
             <tr>
                 <td><a href="/data/qtls/${fileName2}" download>${fileName2}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
-        tableBody.innerHTML += row2;
+      tableBody.innerHTML += row2;
     });
-});
+  });
 
 // Build TWAS models table
-document.getElementById('twasmodels-tissue-select').addEventListener('change', function() {
+document
+  .getElementById("twasmodels-tissue-select")
+  .addEventListener("change", function () {
     const tissue = this.value;
-    const tableBody = document.getElementById('twasmodels-table-body');
-    tableBody.innerHTML = '';
+    const tableBody = document.getElementById("twasmodels-table-body");
+    tableBody.innerHTML = "";
 
-    modalities.forEach(mod => {
-        const fileName1 = `${tissue}.${mod.id}.twas_weights.tar.bz2`;
-        const row1 = `
+    modalities.forEach((mod) => {
+      const fileName1 = `${tissue}.${mod.id}.twas_weights.tar.bz2`;
+      const row1 = `
             <tr>
                 <td><a href="/data/twas_weights/${fileName1}" download>${fileName1}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
-        tableBody.innerHTML += row1;
-        const fileName2 = `${tissue}.${mod.id}.twas_weights.profile`;
-        const row2 = `
+      tableBody.innerHTML += row1;
+      const fileName2 = `${tissue}.${mod.id}.twas_weights.profile`;
+      const row2 = `
             <tr>
                 <td><a href="/data/twas_weights/${fileName2}" download>${fileName2}</a></td>
                 <td>${mod.label}</td>
             </tr>
         `;
-        tableBody.innerHTML += row2;
+      tableBody.innerHTML += row2;
     });
-});
+  });
 
 // Build TWAS associations table
-fetch('/api/traits')
-    .then(response => response.json())
-    .then(traits => {
-        const rowData = traits.map(trait => ({
-            file: `${trait.id}.tar.bz2`,
-            trait: trait.name,
-            category: trait.category,
-            color: trait.color,
-            n: trait.n
-        }));
+fetch("/api/traits")
+  .then((response) => response.json())
+  .then((traits) => {
+    const rowData = traits.map((trait) => ({
+      file: `${trait.id}.tar.bz2`,
+      trait: trait.name,
+      category: trait.category,
+      color: trait.color,
+      n: trait.n,
+    }));
 
-        var gridOptions = {
-            columnDefs: [
-                { 
-                    headerName: "File",
-                    field: "file",
-                    sortable: true,
-                    filter: true,
-                    filterParams: { filterOptions: ['contains', 'equals'] },
-                    flex: 1,
-                    cellRenderer: params => {
-                        return `<a href="/data/twas_associations/${params.value}" download>${params.value}</a>`;
-                    },
-                },
-                { 
-                    headerName: "Trait",
-                    field: "trait",
-                    sortable: true,
-                    filter: true,
-                    filterParams: { filterOptions: ['contains', 'equals'] },
-                    flex: 1,
-                },
-                {
-                    headerName: "Category", 
-                    field: "category",
-                    sortable: true,
-                    filter: SelectFilter,
-                    filterParams: {
-                        values: [
-                            'Aging', 'Allergy', 'Anthropometric', 'Blood', 'Cancer',
-                            'Cardiometabolic', 'Digestive system disease',
-                            'Endocrine system', 'Hair morphology', 'Immune',
-                            'Psychiatric-neurologic', 'Skeletal system disease',
-                        ]
-                    },
-                    width: 240,
-                    cellRenderer: params => {
-                        const circle = `<span style="
-                            display: inline-block;
-                            width: 12px;
-                            height: 12px;
-                            border-radius: 50%;
-                            background-color: ${params.data.color};
-                            margin-right: 8px;
-                            vertical-align: middle;
-                        "></span>`;
-                        return circle + params.value;
-                    }
-                },
-                {
-                    headerName: "GWAS N",
-                    field: "n",
-                    sortable: true,
-                    filter: true,
-                    type: 'numericColumn',
-                    filterParams: { filterOptions: ['equals', 'lessThan', 'greaterThan'] },
-                    width: 125,
-                },
+    var gridOptions = {
+      columnDefs: [
+        {
+          headerName: "File",
+          field: "file",
+          sortable: true,
+          filter: true,
+          filterParams: { filterOptions: ["contains", "equals"] },
+          flex: 1,
+          cellRenderer: (params) => {
+            return `<a href="/data/twas_associations/${params.value}" download>${params.value}</a>`;
+          },
+        },
+        {
+          headerName: "Trait",
+          field: "trait",
+          sortable: true,
+          filter: true,
+          filterParams: { filterOptions: ["contains", "equals"] },
+          flex: 1,
+        },
+        {
+          headerName: "Category",
+          field: "category",
+          sortable: true,
+          filter: SelectFilter,
+          filterParams: {
+            values: [
+              "Aging",
+              "Allergy",
+              "Anthropometric",
+              "Blood",
+              "Cancer",
+              "Cardiometabolic",
+              "Digestive system disease",
+              "Endocrine system",
+              "Hair morphology",
+              "Immune",
+              "Psychiatric-neurologic",
+              "Skeletal system disease",
             ],
-            rowData: rowData,
-        };
-        
-        var eGridDiv = document.querySelector('#twasassoc-table');
-        const gridApi = agGrid.createGrid(eGridDiv, gridOptions);
-        gridApi.sizeColumnsToFit();
-    });
+          },
+          width: 240,
+          cellRenderer: (params) => {
+            const circle = `<span style="
+              display: inline-block;
+              width: 12px;
+              height: 12px;
+              border-radius: 50%;
+              background-color: ${params.data.color};
+              margin-right: 8px;
+              vertical-align: middle;
+            "></span>`;
+            return circle + params.value;
+          },
+        },
+        {
+          headerName: "GWAS N",
+          field: "n",
+          sortable: true,
+          filter: true,
+          type: "numericColumn",
+          filterParams: {
+            filterOptions: ["equals", "lessThan", "greaterThan"],
+          },
+          width: 125,
+        },
+      ],
+      rowData: rowData,
+    };
+
+    var eGridDiv = document.querySelector("#twasassoc-table");
+    const gridApi = agGrid.createGrid(eGridDiv, gridOptions);
+    gridApi.sizeColumnsToFit();
+  });

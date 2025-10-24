@@ -1,284 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Download - Pantry Portal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script src="{{ url_for('static', filename='js/select-filter.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/download.js') }}" defer></script>
-</head>
-<body>
+    <script
+      src="{{ url_for('static', filename='js/download.js') }}"
+      defer
+    ></script>
+  </head>
+  <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Pantry Portal</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-nav" aria-controls="navbar-nav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar-nav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/browse">Browse</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/traits">Traits</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/genes">Genes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/download">Download</a>
-                    </li>
-                </ul>
-            </div>
+      <div class="container">
+        <a class="navbar-brand" href="/">Pantry Portal</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbar-nav"
+          aria-controls="navbar-nav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-nav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/browse">Browse</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/traits">Traits</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/genes">Genes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/download">Download</a>
+            </li>
+          </ul>
         </div>
+      </div>
     </nav>
 
     <div class="container">
-        <h1 class="mt-4 mb-4 text-center">Download</h1>
-        <ul class="nav nav-tabs mb-3" id="download-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="aggregated-tab" data-bs-toggle="tab" data-bs-target="#aggregated" type="button" role="tab" aria-controls="aggregated" aria-selected="true">Aggregated results</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="rnaphenos-tab" data-bs-toggle="tab" data-bs-target="#rnaphenos" type="button" role="tab" aria-controls="rnaphenos" aria-selected="false">RNA phenotypes</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="covariates-tab" data-bs-toggle="tab" data-bs-target="#covariates" type="button" role="tab" aria-controls="covariates" aria-selected="false">Covariates</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="qtls-tab" data-bs-toggle="tab" data-bs-target="#qtls" type="button" role="tab" aria-controls="qtls" aria-selected="false">cis-xQTLs</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="twasmodels-tab" data-bs-toggle="tab" data-bs-target="#twasmodels" type="button" role="tab" aria-controls="twasmodels" aria-selected="false">xTWAS models</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="twasassoc-tab" data-bs-toggle="tab" data-bs-target="#twasassoc" type="button" role="tab" aria-controls="twasassoc" aria-selected="false">xTWAS associations</button>
-            </li>
-        </ul>
-        
-        <div class="tab-content" id="download-tabs-content">
-            <div class="tab-pane fade show active" id="aggregated" role="tabpanel" aria-labelledby="aggregated-tab">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>File</th>
-                            <th>Description</th>
-                            <th class="text-end" style="min-width: 100px">Size</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><a href="/data/processed/pcg_and_lncrna.tsv">pcg_and_lncrna.tsv</a></td>
-                            <td>Ensembl gene IDs for the subset of genes that are protein-coding or lncRNA. We include all genes in the Ensembl annotations in Pantry phenotyping and genetic analyses, and filter to this set of protein-coding and lncRNA genes for the Pantry and LaDDR study analyses. The aggregated results below have not been filtered, though LaDDR phenotyping and genetic analyses do only include protein-coding and lncRNA genes.</td>
-                            <td class="text-end">3.0 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.separate_kdp.assoc.tsv.gz">geuvadis.separate_kdp.assoc.tsv.gz</a></td>
-                            <td>Top cis-QTL associations per gene (<code>*.cis_qtl.txt.gz</code>), not necessarily significant, for each of six knowledge-driven modalities for Geuvadis.</td>
-                            <td class="text-end">7.7 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.ddp.assoc.tsv.gz">geuvadis.ddp.assoc.tsv.gz</a></td>
-                            <td>Top cis-QTL associations per gene (not necessarily significant) for data-driven phenotypes for Geuvadis.</td>
-                            <td class="text-end">2.5 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.separate_kdp.qtls.tsv.gz">geuvadis.separate_kdp.qtls.tsv.gz</a></td>
-                            <td>Conditionally independent cis-QTLs (<code>*.cis_independent_qtl.txt.gz</code>) mapped separately for each of six knowledge-driven modalities for Geuvadis.</td>
-                            <td class="text-end">2.9 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.cross_modality_kdp.qtls.tsv.gz">geuvadis.cross_modality_kdp.qtls.tsv.gz</a></td>
-                            <td>cis-QTLs conditionally independent across six knowledge-driven modalities for Geuvadis.</td>
-                            <td class="text-end">1.6 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.cross_modality_hybrid.qtls.tsv.gz">geuvadis.cross_modality_hybrid.qtls.tsv.gz</a></td>
-                            <td>cis-QTLs conditionally independent across six knowledge-driven modalities plus residual data-driven phenotypes for Geuvadis.</td>
-                            <td class="text-end">2.2 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.ddp.qtls.tsv.gz">geuvadis.ddp.qtls.tsv.gz</a></td>
-                            <td>Conditionally independent cis-QTLs for data-driven phenotypes for Geuvadis.</td>
-                            <td class="text-end">1.9 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.kdp_rddp.hsq.tsv.gz">geuvadis.kdp_rddp.hsq.tsv.gz</a></td>
-                            <td>TWAS transcriptomic model summary table for six knowledge-driven modalities plus residual data-driven phenotypes for Geuvadis.</td>
-                            <td class="text-end">2.4 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.ddp.hsq.tsv.gz">geuvadis.ddp.hsq.tsv.gz</a></td>
-                            <td>TWAS transcriptomic model summary table for data-driven phenotypes for Geuvadis.</td>
-                            <td class="text-end">1.3 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.kdp_rddp.twas_hits.tsv.gz" download>geuvadis.kdp_rddp.twas_hits.tsv.gz</a></td>
-                            <td>TWAS hits for six knowledge-driven modalities plus residual data-driven phenotypes against all traits for Geuvadis.</td>
-                            <td class="text-end">3.6 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/geuvadis.ddp.twas_hits.tsv.gz" download>geuvadis.ddp.twas_hits.tsv.gz</a></td>
-                            <td>TWAS hits for data-driven phenotypes against all traits for Geuvadis.</td>
-                            <td class="text-end">1.9 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.separate_kdp.assoc.tsv.gz" download>gtex.separate_kdp.assoc.tsv.gz</a></td>
-                            <td>Top cis-QTL associations per gene (<code>*.cis_qtl.txt.gz</code>), not necessarily significant, for six knowledge-driven modalities for 49 GTEx tissues.</td>
-                            <td class="text-end">464 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.ddp.assoc.tsv.gz">gtex.ddp.assoc.tsv.gz</a></td>
-                            <td>Top cis-QTL associations per gene (not necessarily significant) for data-driven phenotypes for 49 GTEx tissues.</td>
-                            <td class="text-end">141 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.separate_kdp.qtls.tsv.gz" download>gtex.separate_kdp.qtls.tsv.gz</a></td>
-                            <td>Conditionally independent cis-QTLs (<code>*.cis_independent_qtl.txt.gz</code>) mapped separately for each of six knowledge-driven modalities for 49 GTEx tissues.</td>
-                            <td class="text-end">106 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.cross_modality_kdp.qtls.tsv.gz" download>gtex.cross_modality_kdp.qtls.tsv.gz</a></td>
-                            <td>cis-QTLs conditionally independent across six knowledge-driven modalities for 49 GTEx tissues.</td>
-                            <td class="text-end">60 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.cross_modality_hybrid.qtls.tsv.gz">gtex.cross_modality_hybrid.qtls.tsv.gz</a></td>
-                            <td>cis-QTLs conditionally independent across six knowledge-driven modalities plus residual data-driven phenotypes for 49 GTEx tissues.</td>
-                            <td class="text-end">130 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.ddp.qtls.tsv.gz">gtex.ddp.qtls.tsv.gz</a></td>
-                            <td>Conditionally independent cis-QTLs for data-driven phenotypes for 49 GTEx tissues.</td>
-                            <td class="text-end">99 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.kdp_rddp.hsq.tsv.gz" download>gtex.kdp_rddp.hsq.tsv.gz</a></td>
-                            <td>TWAS transcriptomic model summary table for six knowledge-driven modalities plus residual data-driven phenotypes for 49 GTEx tissues.</td>
-                            <td class="text-end">121 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.ddp.hsq.tsv.gz" download>gtex.ddp.hsq.tsv.gz</a></td>
-                            <td>TWAS transcriptomic model summary table for data-driven phenotypes for 49 GTEx tissues.</td>
-                            <td class="text-end">83 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.kdp_rddp.twas_hits.tsv.gz" download>gtex.kdp_rddp.twas_hits.tsv.gz</a></td>
-                            <td>TWAS hits for six knowledge-driven modalities plus residual data-driven phenotypes against all traits for 49 GTEx tissues.</td>
-                            <td class="text-end">176 MB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/data/processed/gtex.ddp.twas_hits.tsv.gz" download>gtex.ddp.twas_hits.tsv.gz</a></td>
-                            <td>TWAS hits for data-driven phenotypes against all traits for 49 GTEx tissues.</td>
-                            <td class="text-end">100 MB</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+      <h1 class="mt-4 mb-4 text-center">Download</h1>
+      <ul class="nav nav-tabs mb-3" id="download-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="aggregated-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#aggregated"
+            type="button"
+            role="tab"
+            aria-controls="aggregated"
+            aria-selected="true"
+          >
+            Aggregated results
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="rnaphenos-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#rnaphenos"
+            type="button"
+            role="tab"
+            aria-controls="rnaphenos"
+            aria-selected="false"
+          >
+            RNA phenotypes
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="covariates-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#covariates"
+            type="button"
+            role="tab"
+            aria-controls="covariates"
+            aria-selected="false"
+          >
+            Covariates
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="qtls-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#qtls"
+            type="button"
+            role="tab"
+            aria-controls="qtls"
+            aria-selected="false"
+          >
+            cis-xQTLs
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="twasmodels-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#twasmodels"
+            type="button"
+            role="tab"
+            aria-controls="twasmodels"
+            aria-selected="false"
+          >
+            xTWAS models
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="twasassoc-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#twasassoc"
+            type="button"
+            role="tab"
+            aria-controls="twasassoc"
+            aria-selected="false"
+          >
+            xTWAS associations
+          </button>
+        </li>
+      </ul>
 
-            <div class="tab-pane fade" id="rnaphenos" role="tabpanel" aria-labelledby="rnaphenos-tab">
-                <p>RNA phenotypes were quantified for Geuvadis and 49 GTEx tissues. The tables are in BED format, with the first three columns specifying the TSS coordinate of each phenotype's gene, i.e., the input format for <code>tensorQTL</code>. They have been normalized by quantile-normalizing samples to the average empirical distribution, followed by rank-based inverse-normal transformation per phenotype. For GTEx tissues, we included only samples with genotypes and converted sample IDs to individual IDs to match the genotypes.</p>
-
-                <div class="mb-3">
-                    <label for="rnaphenos-tissue-select" class="form-label">Select Tissue:</label>
-                    <select class="form-select" id="rnaphenos-tissue-select">
-                        <!-- Options will be populated by JavaScript -->
-                    </select>
-                </div>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>File</th>
-                            <th>Modality</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rnaphenos-table-body"></tbody>
-                </table>
-                
-            </div>
-
-            <div class="tab-pane fade" id="covariates" role="tabpanel" aria-labelledby="covariates-tab">
-                <p>For each tissue-modality RNA phenotype table, the covariates include the first 20 principal components (PCs) of the phenotype table and the first 5 PCs of the genotype alternative allele count matrix. We include two formats for each covariate table, one compatible with tensorQTL (<code>*.covar.tsv</code>), and one in PLINK format for compatibility with FUSION (<code>*.covar.plink.tsv</code>).</p>
-                <p>We include covariates and cis-QTL results for a concatenation of phenotypes from six knowledge-driven modalities (<code>cross_modality_KDP</code>) and for a concatenation of phenotypes from the six knowledge-driven modalities plus residual data-driven phenotypes (<code>cross_modality_hybrid</code>). Covariates for these are computed from the <code>combined</code> phenotype tables, and are not concatenations of each modality's covariates. We used them for cross-modality mapping of cis-QTLs, but not for xTWAS.</p>
-
-                <div class="mb-3">
-                    <label for="covariates-tissue-select" class="form-label">Select Tissue:</label>
-                    <select class="form-select" id="covariates-tissue-select">
-                        <!-- Options will be populated by JavaScript -->
-                    </select>
-                </div>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>File</th>
-                            <th>Modality</th>
-                            <th>Format</th>
-                        </tr>
-                    </thead>
-                    <tbody id="covariates-table-body"></tbody>
-                </table>
-                
-            </div>
-
-            <div class="tab-pane fade" id="qtls" role="tabpanel" aria-labelledby="qtls-tab">
-                <p>Output files from tensorQTL run in <code>cis</code> mode (<code>*.cis_qtl.txt.gz</code>, top association per gene, even if not significant) and <code>cis_independent</code> mode (<code>*.cis_independent_qtl.txt.gz</code>, all conditionally-independent cis-QTLs). Files for <code>cross_modality_kdp</code> are the result of running tensorQTL on phenotype tables and group files containing all six knowledge-driven modalities, so that cis-QTLs are conditionally independent across modalities per gene (cross-modality mapping), and phenotypes used for <code>cross_modality_hybrid</code> included the six knowledge-driven modalities plus residual data-driven phenotypes.</p>
-
-                <div class="mb-3">
-                    <label for="qtls-tissue-select" class="form-label">Select Tissue:</label>
-                    <select class="form-select" id="qtls-tissue-select">
-                        <!-- Options will be populated by JavaScript -->
-                    </select>
-                </div>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>File</th>
-                            <th>Modality</th>
-                        </tr>
-                    </thead>
-                    <tbody id="qtls-table-body"></tbody>
-                </table>
-            </div>
-
-            <div class="tab-pane fade" id="twasmodels" role="tabpanel" aria-labelledby="twasmodels-tab">
-                <p>A set of TWAS transcriptomic models was generated for each tissue-modality pair using FUSION. The weights and summary files are provided in compressed archives, and the outputs of the FUSION script <code>FUSION.profile_wgt.R</code>, i.e. tables giving cis-heritability and model stats per phenotype, are also included separately (<code>*.twas_weights.profile</code>).</p>
-
-                <div class="mb-3">
-                    <label for="twasmodels-tissue-select" class="form-label">Select Tissue:</label>
-                    <select class="form-select" id="twasmodels-tissue-select">
-                        <!-- Options will be populated by JavaScript -->
-                    </select>
-                </div>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>File</th>
-                            <th>Modality</th>
-                        </tr>
-                    </thead>
-                    <tbody id="twasmodels-table-body"></tbody>
-                </table>
-            </div>
-
-            <div class="tab-pane fade" id="twasassoc" role="tabpanel" aria-labelledby="twasassoc-tab">
-                <p>TWAS associations were calculated for each set of models against summary stats for each of <a href="https://zenodo.org/records/3629742#.XjCh9OF7m90">114 GWAS traits previously harmonized to GTEx v8 variant reference</a>. Outputs of <code>FUSION.assoc_test.R</code> were concatenated across chromosomes to get one table per trait-tissue-modality combination. Tables are provided in compressed archives per trait and include, for each tissue, results for the six knowledge-driven modalities, residual data-driven phenotypes, and full data-driven phenotypes. It is recommended to analyze either the knowledge-driven and residual data-driven phenotypes together or just the full data-driven phenotypes.</p>
-
-                <div id="twasassoc-table" style="height: 600px; width: 100%;" class="ag-theme-alpine"></div>
-            </div>
-
-            <br>
+      <div class="tab-content" id="download-tabs-content">
+        <div
+          class="tab-pane fade show active"
+          id="aggregated"
+          role="tabpanel"
+          aria-labelledby="aggregated-tab"
+        >
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Description</th>
+                <th class="text-end" style="min-width: 100px">Size</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <a href="/data/processed/pcg_and_lncrna.tsv">
+                    pcg_and_lncrna.tsv
+                  </a>
+                </td>
+                <td>
+                  Ensembl gene IDs for the subset of genes that are
+                  protein-coding or lncRNA. We include all genes in the Ensembl
+                  annotations in Pantry phenotyping and genetic analyses, and
+                  filter to this set of protein-coding and lncRNA genes for the
+                  Pantry and LaDDR study analyses. The aggregated results below
+                  have not been filtered, though LaDDR phenotyping and genetic
+                  analyses do only include protein-coding and lncRNA genes.
+                </td>
+                <td class="text-end">3.0 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/geuvadis.separate_kdp.assoc.tsv.gz">
+                    geuvadis.separate_kdp.assoc.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  Top cis-QTL associations per gene
+                  (<code>*.cis_qtl.txt.gz</code>), not necessarily significant,
+                  for each of six knowledge-driven modalities for Geuvadis.
+                </td>
+                <td class="text-end">7.7 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/geuvadis.ddp.assoc.tsv.gz">
+                    geuvadis.ddp.assoc.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  Top cis-QTL associations per gene (not necessarily
+                  significant) for data-driven phenotypes for Geuvadis.
+                </td>
+                <td class="text-end">2.5 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/geuvadis.separate_kdp.qtls.tsv.gz">
+                    geuvadis.separate_kdp.qtls.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  Conditionally independent cis-QTLs
+                  (<code>*.cis_independent_qtl.txt.gz</code>) mapped separately
+                  for each of six knowledge-driven modalities for Geuvadis.
+                </td>
+                <td class="text-end">2.9 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="/data/processed/geuvadis.cross_modality_kdp.qtls.tsv.gz"
+                  >
+                    geuvadis.cross_modality_kdp.qtls.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  cis-QTLs conditionally independent across six knowledge-driven
+                  modalities for Geuvadis.
+                </td>
+                <td class="text-end">1.6 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="/data/processed/geuvadis.cross_modality_hybrid.qtls.tsv.gz"
+                  >
+                    geuvadis.cross_modality_hybrid.qtls.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  cis-QTLs conditionally independent across six knowledge-driven
+                  modalities plus residual data-driven phenotypes for Geuvadis.
+                </td>
+                <td class="text-end">2.2 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/geuvadis.ddp.qtls.tsv.gz">
+                    geuvadis.ddp.qtls.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  Conditionally independent cis-QTLs for data-driven phenotypes
+                  for Geuvadis.
+                </td>
+                <td class="text-end">1.9 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/geuvadis.kdp_rddp.hsq.tsv.gz">
+                    geuvadis.kdp_rddp.hsq.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  TWAS transcriptomic model summary table for six
+                  knowledge-driven modalities plus residual data-driven
+                  phenotypes for Geuvadis.
+                </td>
+                <td class="text-end">2.4 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/geuvadis.ddp.hsq.tsv.gz">
+                    geuvadis.ddp.hsq.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  TWAS transcriptomic model summary table for data-driven
+                  phenotypes for Geuvadis.
+                </td>
+                <td class="text-end">1.3 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="/data/processed/geuvadis.kdp_rddp.twas_hits.tsv.gz"
+                    download
+                  >
+                    geuvadis.kdp_rddp.twas_hits.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  TWAS hits for six knowledge-driven modalities plus residual
+                  data-driven phenotypes against all traits for Geuvadis.
+                </td>
+                <td class="text-end">3.6 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="/data/processed/geuvadis.ddp.twas_hits.tsv.gz"
+                    download
+                  >
+                    geuvadis.ddp.twas_hits.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  TWAS hits for data-driven phenotypes against all traits for
+                  Geuvadis.
+                </td>
+                <td class="text-end">1.9 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="/data/processed/gtex.separate_kdp.assoc.tsv.gz"
+                    download
+                  >
+                    gtex.separate_kdp.assoc.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  Top cis-QTL associations per gene
+                  (<code>*.cis_qtl.txt.gz</code>), not necessarily significant,
+                  for six knowledge-driven modalities for 49 GTEx tissues.
+                </td>
+                <td class="text-end">464 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/gtex.ddp.assoc.tsv.gz">
+                    gtex.ddp.assoc.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  Top cis-QTL associations per gene (not necessarily
+                  significant) for data-driven phenotypes for 49 GTEx tissues.
+                </td>
+                <td class="text-end">141 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="/data/processed/gtex.separate_kdp.qtls.tsv.gz"
+                    download
+                  >
+                    gtex.separate_kdp.qtls.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  Conditionally independent cis-QTLs
+                  (<code>*.cis_independent_qtl.txt.gz</code>) mapped separately
+                  for each of six knowledge-driven modalities for 49 GTEx
+                  tissues.
+                </td>
+                <td class="text-end">106 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="/data/processed/gtex.cross_modality_kdp.qtls.tsv.gz"
+                    download
+                  >
+                    gtex.cross_modality_kdp.qtls.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  cis-QTLs conditionally independent across six knowledge-driven
+                  modalities for 49 GTEx tissues.
+                </td>
+                <td class="text-end">60 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="/data/processed/gtex.cross_modality_hybrid.qtls.tsv.gz"
+                  >
+                    gtex.cross_modality_hybrid.qtls.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  cis-QTLs conditionally independent across six knowledge-driven
+                  modalities plus residual data-driven phenotypes for 49 GTEx
+                  tissues.
+                </td>
+                <td class="text-end">130 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/gtex.ddp.qtls.tsv.gz">
+                    gtex.ddp.qtls.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  Conditionally independent cis-QTLs for data-driven phenotypes
+                  for 49 GTEx tissues.
+                </td>
+                <td class="text-end">99 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/gtex.kdp_rddp.hsq.tsv.gz" download>
+                    gtex.kdp_rddp.hsq.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  TWAS transcriptomic model summary table for six
+                  knowledge-driven modalities plus residual data-driven
+                  phenotypes for 49 GTEx tissues.
+                </td>
+                <td class="text-end">121 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/gtex.ddp.hsq.tsv.gz" download>
+                    gtex.ddp.hsq.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  TWAS transcriptomic model summary table for data-driven
+                  phenotypes for 49 GTEx tissues.
+                </td>
+                <td class="text-end">83 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="/data/processed/gtex.kdp_rddp.twas_hits.tsv.gz"
+                    download
+                  >
+                    gtex.kdp_rddp.twas_hits.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  TWAS hits for six knowledge-driven modalities plus residual
+                  data-driven phenotypes against all traits for 49 GTEx tissues.
+                </td>
+                <td class="text-end">176 MB</td>
+              </tr>
+              <tr>
+                <td>
+                  <a href="/data/processed/gtex.ddp.twas_hits.tsv.gz" download>
+                    gtex.ddp.twas_hits.tsv.gz
+                  </a>
+                </td>
+                <td>
+                  TWAS hits for data-driven phenotypes against all traits for 49
+                  GTEx tissues.
+                </td>
+                <td class="text-end">100 MB</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
+        <div
+          class="tab-pane fade"
+          id="rnaphenos"
+          role="tabpanel"
+          aria-labelledby="rnaphenos-tab"
+        >
+          <p>
+            RNA phenotypes were quantified for Geuvadis and 49 GTEx tissues. The
+            tables are in BED format, with the first three columns specifying
+            the TSS coordinate of each phenotype's gene, i.e., the input format
+            for <code>tensorQTL</code>. They have been normalized by
+            quantile-normalizing samples to the average empirical distribution,
+            followed by rank-based inverse-normal transformation per phenotype.
+            For GTEx tissues, we included only samples with genotypes and
+            converted sample IDs to individual IDs to match the genotypes.
+          </p>
+
+          <div class="mb-3">
+            <label for="rnaphenos-tissue-select" class="form-label"
+              >Select Tissue:</label
+            >
+            <select class="form-select" id="rnaphenos-tissue-select">
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Modality</th>
+              </tr>
+            </thead>
+            <tbody id="rnaphenos-table-body"></tbody>
+          </table>
+        </div>
+
+        <div
+          class="tab-pane fade"
+          id="covariates"
+          role="tabpanel"
+          aria-labelledby="covariates-tab"
+        >
+          <p>
+            For each tissue-modality RNA phenotype table, the covariates include
+            the first 20 principal components (PCs) of the phenotype table and
+            the first 5 PCs of the genotype alternative allele count matrix. We
+            include two formats for each covariate table, one compatible with
+            tensorQTL (<code>*.covar.tsv</code>), and one in PLINK format for
+            compatibility with FUSION (<code>*.covar.plink.tsv</code>).
+          </p>
+          <p>
+            We include covariates and cis-QTL results for a concatenation of
+            phenotypes from six knowledge-driven modalities
+            (<code>cross_modality_KDP</code>) and for a concatenation of
+            phenotypes from the six knowledge-driven modalities plus residual
+            data-driven phenotypes (<code>cross_modality_hybrid</code>).
+            Covariates for these are computed from the
+            <code>combined</code> phenotype tables, and are not concatenations
+            of each modality's covariates. We used them for cross-modality
+            mapping of cis-QTLs, but not for xTWAS.
+          </p>
+
+          <div class="mb-3">
+            <label for="covariates-tissue-select" class="form-label"
+              >Select Tissue:</label
+            >
+            <select class="form-select" id="covariates-tissue-select">
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Modality</th>
+                <th>Format</th>
+              </tr>
+            </thead>
+            <tbody id="covariates-table-body"></tbody>
+          </table>
+        </div>
+
+        <div
+          class="tab-pane fade"
+          id="qtls"
+          role="tabpanel"
+          aria-labelledby="qtls-tab"
+        >
+          <p>
+            Output files from tensorQTL run in <code>cis</code> mode
+            (<code>*.cis_qtl.txt.gz</code>, top association per gene, even if
+            not significant) and <code>cis_independent</code> mode
+            (<code>*.cis_independent_qtl.txt.gz</code>, all
+            conditionally-independent cis-QTLs). Files for
+            <code>cross_modality_kdp</code> are the result of running tensorQTL
+            on phenotype tables and group files containing all six
+            knowledge-driven modalities, so that cis-QTLs are conditionally
+            independent across modalities per gene (cross-modality mapping), and
+            phenotypes used for <code>cross_modality_hybrid</code> included the
+            six knowledge-driven modalities plus residual data-driven
+            phenotypes.
+          </p>
+
+          <div class="mb-3">
+            <label for="qtls-tissue-select" class="form-label"
+              >Select Tissue:</label
+            >
+            <select class="form-select" id="qtls-tissue-select">
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Modality</th>
+              </tr>
+            </thead>
+            <tbody id="qtls-table-body"></tbody>
+          </table>
+        </div>
+
+        <div
+          class="tab-pane fade"
+          id="twasmodels"
+          role="tabpanel"
+          aria-labelledby="twasmodels-tab"
+        >
+          <p>
+            A set of TWAS transcriptomic models was generated for each
+            tissue-modality pair using FUSION. The weights and summary files are
+            provided in compressed archives, and the outputs of the FUSION
+            script <code>FUSION.profile_wgt.R</code>, i.e. tables giving
+            cis-heritability and model stats per phenotype, are also included
+            separately (<code>*.twas_weights.profile</code>).
+          </p>
+
+          <div class="mb-3">
+            <label for="twasmodels-tissue-select" class="form-label"
+              >Select Tissue:</label
+            >
+            <select class="form-select" id="twasmodels-tissue-select">
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Modality</th>
+              </tr>
+            </thead>
+            <tbody id="twasmodels-table-body"></tbody>
+          </table>
+        </div>
+
+        <div
+          class="tab-pane fade"
+          id="twasassoc"
+          role="tabpanel"
+          aria-labelledby="twasassoc-tab"
+        >
+          <p>
+            TWAS associations were calculated for each set of models against
+            summary stats for each of
+            <a href="https://zenodo.org/records/3629742#.XjCh9OF7m90">
+              114 GWAS traits previously harmonized to GTEx v8 variant
+              reference</a
+            >. Outputs of <code>FUSION.assoc_test.R</code> were concatenated
+            across chromosomes to get one table per trait-tissue-modality
+            combination. Tables are provided in compressed archives per trait
+            and include, for each tissue, results for the six knowledge-driven
+            modalities, residual data-driven phenotypes, and full data-driven
+            phenotypes. It is recommended to analyze either the knowledge-driven
+            and residual data-driven phenotypes together or just the full
+            data-driven phenotypes.
+          </p>
+
+          <div
+            id="twasassoc-table"
+            style="height: 600px; width: 100%"
+            class="ag-theme-alpine"
+          ></div>
+        </div>
+
+        <br />
+      </div>
     </div>
-</body>
+  </body>
 </html>
