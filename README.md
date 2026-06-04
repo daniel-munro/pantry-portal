@@ -43,7 +43,8 @@ data repository (`info/`, `processed/`, `covariates/`, etc.).
 ## Repository structure
 
 - `portal/app.py`: Flask app entrypoint.
-- `portal/config.py`: loads metadata, stats, and gene/trait lists into memory.
+- `portal/settings.py`: resolves `DATA_DIR` and database settings.
+- `portal/catalog.py`: loads metadata, stats, and gene/trait lists into memory.
 - `portal/routes/`: view routes and JSON API routes.
 - `portal/services/`: query utilities for SQL filtering/pagination.
 - `portal/templates/`: HTML pages (home, browse, traits, genes, download).

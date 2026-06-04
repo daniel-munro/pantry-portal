@@ -3,7 +3,7 @@
 import json
 import sqlalchemy as db
 from flask import Request
-from portal.config import TRAITS
+from portal.catalog import TRAITS
 
 TRAIT_NAME_BY_ID = {trait['id']: trait['name'] for trait in TRAITS}
 

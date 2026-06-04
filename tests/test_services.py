@@ -7,8 +7,8 @@ from flask import Flask, request
 from sqlalchemy import create_engine
 
 
-def _write_config_data(data_dir):
-    """Create the minimal DATA_DIR files needed to import portal.config."""
+def _write_catalog_data(data_dir):
+    """Create the minimal DATA_DIR files needed to import portal.catalog."""
     info_dir = data_dir / "info"
     processed_dir = data_dir / "processed"
     info_dir.mkdir()
@@ -71,7 +71,7 @@ def _clear_portal_modules():
 
 
 def _load_ag_grid_query(tmp_path, monkeypatch):
-    _write_config_data(tmp_path)
+    _write_catalog_data(tmp_path)
     db_path = tmp_path / "data.db"
     _write_query_table(db_path)
     monkeypatch.setenv("DATA_DIR", str(tmp_path))

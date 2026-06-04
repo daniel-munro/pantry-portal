@@ -1,7 +1,7 @@
 """Handle rendering of web pages."""
 
 from flask import render_template, send_from_directory
-from portal.config import DATA_DIR
+from portal.settings import DATA_DIR
 
 def init_views(app):
     @app.route('/')

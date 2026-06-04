@@ -1,7 +1,7 @@
 """Define REST API endpoints for serving data to the frontend."""
 
 from flask import jsonify, request
-from portal.config import TISSUES, TRAITS, GENES
+from portal.catalog import GENES, TISSUES, TRAITS
 from portal.services.query_service import ag_grid_query, get_trait_hits, get_gene_hits, get_gene_qtls
 
 def init_api_routes(app, engine):

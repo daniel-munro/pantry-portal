@@ -86,7 +86,7 @@ def _write_test_data(data_dir):
 
 
 def _clear_portal_modules():
-    """Force portal.config to reload after each test sets DATA_DIR."""
+    """Force portal modules to reload after each test sets DATA_DIR."""
     for module_name in list(sys.modules):
         if module_name == "portal" or module_name.startswith("portal."):
             del sys.modules[module_name]

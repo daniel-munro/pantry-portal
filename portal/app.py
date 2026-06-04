@@ -3,7 +3,7 @@
 import os
 from flask import Flask
 from sqlalchemy import create_engine
-from portal.config import DATABASE_URI
+from portal.settings import DATABASE_URI
 from portal.routes.api_routes import init_api_routes
 from portal.routes.views import init_views
 
