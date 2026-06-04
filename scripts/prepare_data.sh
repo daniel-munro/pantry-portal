@@ -344,5 +344,5 @@ gzip -c ../laddr/twas/output/twas_hits.geuvadis-full-Geuvadis.tsv > data/process
 ## Build database and compute stats ##
 ######################################
 
-python3 scripts/load_data.py
-python3 scripts/compute_stats.py
+python3 scripts/build_sqlite_db.py
+python3 scripts/compute_summary_stats.py

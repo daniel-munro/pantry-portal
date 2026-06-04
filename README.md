@@ -48,7 +48,7 @@ data repository (`info/`, `processed/`, `covariates/`, etc.).
 - `portal/services/`: query utilities for SQL filtering/pagination.
 - `portal/templates/`: HTML pages (home, browse, traits, genes, download).
 - `portal/static/`: JS for AG Grid tables, CSS, and images.
-- `scripts/`: data preparation, DB loading, and stats precomputation.
+- `scripts/`: data preparation, SQLite DB building, and stats precomputation.
 - `data/`: SQLite DB and symlinks to shared datasets.
 - `tests/`: placeholder test files.
 
@@ -56,10 +56,10 @@ data repository (`info/`, `processed/`, `covariates/`, etc.).
 
 - `scripts/prepare_data.sh`: syncs source data into `data/` and builds
   aggregated files.
-- `scripts/load_data.py`: loads TSV inputs into `data/data.db`.
+- `scripts/build_sqlite_db.py`: builds `data/data.db` from processed TSV inputs.
 - `scripts/create_indexes.py`: adds SQLite indexes used by interactive trait,
   gene, and QTL lookups in an existing `data/data.db`.
-- `scripts/compute_stats.py`: precomputes `trait_stats.json` and
+- `scripts/compute_summary_stats.py`: computes `trait_stats.json` and
   `gene_stats.json` from the DB.
 - `scripts/inspect_tables.sh`: prints sample rows from each SQLite table.
 

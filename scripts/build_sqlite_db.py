@@ -1,15 +1,10 @@
-"""Load TSV files into a SQLite database."""
+"""Build the portal SQLite database from processed TSV inputs."""
 
 import gzip
 import pandas as pd
 from sqlalchemy import create_engine, Engine, text
 
-INDEX_STATEMENTS = [
-    "CREATE INDEX IF NOT EXISTS idx_twas_hybrid_trait ON twas_hybrid(trait)",
-    "CREATE INDEX IF NOT EXISTS idx_twas_hybrid_trait_p ON twas_hybrid(trait, twas_p)",
-    "CREATE INDEX IF NOT EXISTS idx_twas_hybrid_gene_id ON twas_hybrid(gene_id)",
-    "CREATE INDEX IF NOT EXISTS idx_qtls_hybrid_gene_id ON qtls_hybrid(gene_id)",
-]
+from sqlite_schema import INDEX_STATEMENTS
 
 def load_gene_info(gtf: str) -> pd.DataFrame:
     records = []    
