@@ -182,3 +182,19 @@ def ag_grid_query(engine: db.engine.Engine, table_name: str, request: Request) -
     table = db.Table(table_name, db.MetaData(), autoload_with=engine)
     query = db.select(table)
     return _ag_grid_page(engine, table, request, query)
+
+
+def get_distinct_column_values(
+    engine: db.engine.Engine,
+    table_name: str,
+    column_name: str,
+) -> list:
+    """Return sorted non-null distinct values for one table column."""
+    table = db.Table(table_name, db.MetaData(), autoload_with=engine)
+    column = getattr(table.c, column_name)
+    query = db.select(column).distinct().where(column.is_not(None)).order_by(column)
+
+    with engine.connect() as conn:
+        result = conn.execute(query).fetchall()
+
+    return [row[0] for row in result]

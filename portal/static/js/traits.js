@@ -1,17 +1,7 @@
 // Global variables for grid instances
 let traitsGridApi;
 let hitsGridApi;
-
-const CHROMOSOMES = Array.from({ length: 22 }, (_, index) => `chr${index + 1}`);
-const MODALITIES = [
-  "Alternative polyA",
-  "Alternative TSS",
-  "Expression",
-  "Isoform ratio",
-  "Intron excision ratio",
-  "RNA stability",
-  "Latent residual",
-];
+let portalMetadata;
 
 function buildAgGridQuery(params) {
   let sortParams = "";
@@ -33,9 +23,12 @@ function buildAgGridQuery(params) {
 
 // Traits table
 
-fetch("/api/traits")
-  .then((response) => response.json())
-  .then((traits) => {
+Promise.all([
+  fetch("/api/metadata").then((response) => response.json()),
+  fetch("/api/traits").then((response) => response.json()),
+]).then(([metadata, traits]) => {
+    portalMetadata = metadata;
+
     const rowData = traits.map((trait) => ({
       id: trait.id,
       trait: trait.name,
@@ -62,20 +55,7 @@ fetch("/api/traits")
           sortable: true,
           filter: SelectFilter,
           filterParams: {
-            values: [
-              "Aging",
-              "Allergy",
-              "Anthropometric",
-              "Blood",
-              "Cancer",
-              "Cardiometabolic",
-              "Digestive system disease",
-              "Endocrine system",
-              "Hair morphology",
-              "Immune",
-              "Psychiatric-neurologic",
-              "Skeletal system disease",
-            ],
+            values: metadata.traitCategories,
           },
           width: 240,
           cellRenderer: (params) => {
@@ -195,7 +175,7 @@ function loadTraitHits(traitId, traitName) {
         sortable: false,
         filter: SelectFilter,
         filterParams: {
-          values: CHROMOSOMES,
+          values: portalMetadata.chromosomes,
         },
         flex: 1,
       },
@@ -221,7 +201,7 @@ function loadTraitHits(traitId, traitName) {
         sortable: true,
         filter: SelectFilter,
         filterParams: {
-          values: MODALITIES,
+          values: portalMetadata.browseModalities,
         },
         flex: 1,
       },

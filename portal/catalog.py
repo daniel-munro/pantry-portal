@@ -6,6 +6,46 @@ import pandas as pd
 
 from portal.settings import DATA_DIR
 
+CHROMOSOMES = [f"chr{i}" for i in range(1, 23)]
+
+DOWNLOAD_MODALITIES = [
+    {"id": "alt_polyA", "label": "Alternative polyA"},
+    {"id": "alt_TSS", "label": "Alternative TSS"},
+    {"id": "expression", "label": "Expression"},
+    {"id": "isoforms", "label": "Isoform ratio"},
+    {"id": "splicing", "label": "Intron excision ratio"},
+    {"id": "stability", "label": "RNA stability"},
+    {"id": "latent_residual", "label": "Residual data-driven"},
+    {"id": "latent_full", "label": "Full data-driven"},
+]
+
+DOWNLOAD_QTL_MODALITIES = [
+    {"id": "alt_polyA", "label": "Alternative polyA"},
+    {"id": "alt_TSS", "label": "Alternative TSS"},
+    {"id": "expression", "label": "Expression"},
+    {"id": "isoforms", "label": "Isoform ratio"},
+    {"id": "splicing", "label": "Intron excision ratio"},
+    {"id": "stability", "label": "RNA stability"},
+    {"id": "latent_full", "label": "Full data-driven"},
+    {"id": "cross_modality_kdp", "label": "Cross-modality knowledge-driven"},
+    {"id": "cross_modality_hybrid", "label": "Cross-modality hybrid"},
+]
+
+BROWSE_MODALITIES = [
+    "Alternative polyA",
+    "Alternative TSS",
+    "Expression",
+    "Isoform ratio",
+    "Intron excision ratio",
+    "RNA stability",
+    "Latent residual",
+]
+
+
+def dataframe_records(df: pd.DataFrame) -> list[dict]:
+    """Convert a DataFrame to records with missing values encoded as JSON null."""
+    return df.astype(object).where(pd.notna(df), None).to_dict("records")
+
 
 def load_tissues() -> list[str]:
     """Load tissue IDs used by download menus and metadata endpoints."""
@@ -37,7 +77,7 @@ def load_traits() -> list[dict]:
     traits["genes"] = traits["name"].map(
         lambda trait: trait_stats.get(trait, {}).get("genes", 0)
     )
-    return traits.to_dict("records")
+    return dataframe_records(traits)
 
 
 def load_genes() -> list[dict]:
@@ -57,9 +97,6 @@ def load_genes() -> list[dict]:
     allowed_chromosomes = {f"chr{i}" for i in range(1, 23)}
     genes = genes[genes["chrom"].isin(allowed_chromosomes)].copy()
 
-    # Ensure missing values become None so they JSONify to null.
-    genes = genes.where(pd.notna(genes), None)
-
     with open(DATA_DIR / "gene_stats.json", "r") as f:
         gene_stats = json.load(f)
 
@@ -72,9 +109,10 @@ def load_genes() -> list[dict]:
     genes["qtls"] = genes["id"].map(
         lambda gene_id: gene_stats.get(gene_id, {}).get("qtls", 0)
     )
-    return genes.to_dict("records")
+    return dataframe_records(genes)
 
 
 TISSUES = load_tissues()
 TRAITS = load_traits()
 GENES = load_genes()
+TRAIT_CATEGORIES = sorted({trait["category"] for trait in TRAITS})

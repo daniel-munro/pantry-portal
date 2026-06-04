@@ -1,8 +1,23 @@
 """Define REST API endpoints for serving data to the frontend."""
 
 from flask import jsonify, request
-from portal.catalog import GENES, TISSUES, TRAITS
-from portal.services.query_service import ag_grid_query, get_trait_hits, get_gene_hits, get_gene_qtls
+from portal.catalog import (
+    BROWSE_MODALITIES,
+    CHROMOSOMES,
+    DOWNLOAD_MODALITIES,
+    DOWNLOAD_QTL_MODALITIES,
+    GENES,
+    TISSUES,
+    TRAIT_CATEGORIES,
+    TRAITS,
+)
+from portal.services.query_service import (
+    ag_grid_query,
+    get_distinct_column_values,
+    get_gene_hits,
+    get_gene_qtls,
+    get_trait_hits,
+)
 
 def init_api_routes(app, engine):
     @app.route('/api/tissues')
@@ -16,6 +31,22 @@ def init_api_routes(app, engine):
     @app.route('/api/genes')
     def get_genes():
         return jsonify(GENES)
+
+    @app.route('/api/metadata')
+    def get_metadata():
+        return jsonify({
+            'browseModalities': BROWSE_MODALITIES,
+            'chromosomes': CHROMOSOMES,
+            'downloadModalities': DOWNLOAD_MODALITIES,
+            'downloadQtlModalities': DOWNLOAD_QTL_MODALITIES,
+            'tissueNames': get_distinct_column_values(
+                engine,
+                'twas_hybrid',
+                'tissue_name',
+            ),
+            'tissues': TISSUES,
+            'traitCategories': TRAIT_CATEGORIES,
+        })
 
     @app.route('/api/trait-hits/<trait_id>')
     def get_trait_hits_api(trait_id):

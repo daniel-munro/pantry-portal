@@ -37,6 +37,7 @@ def _write_test_data(data_dir):
             "strand",
         ]) + "\n"
         "GENE1\tGene One\tprotein_coding\tchr1\t1\t2\t+\n"
+        "GENE2\t\tlncRNA\tchr2\t3\t4\t-\n"
     )
 
     conn = sqlite3.connect(data_dir / "data.db")
@@ -141,3 +142,35 @@ def test_trait_hits_endpoint_returns_empty_page_for_unknown_trait(tmp_path, monk
 
     assert response.status_code == 200
     assert response.get_json() == {"rows": [], "totalCount": 0}
+
+
+def test_metadata_endpoint_returns_frontend_option_lists(tmp_path, monkeypatch):
+    _write_test_data(tmp_path)
+    monkeypatch.setenv("DATA_DIR", str(tmp_path))
+    _clear_portal_modules()
+
+    app_module = importlib.import_module("portal.app")
+    response = app_module.app.test_client().get("/api/metadata")
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["tissues"] == ["T1", "T2"]
+    assert data["tissueNames"] == ["Tissue One", "Tissue Two"]
+    assert data["chromosomes"][:2] == ["chr1", "chr2"]
+    assert "Blood" in data["traitCategories"]
+    assert {"id": "expression", "label": "Expression"} in data["downloadModalities"]
+    assert "Expression" in data["browseModalities"]
+
+
+def test_genes_endpoint_serializes_missing_gene_names_as_null(tmp_path, monkeypatch):
+    _write_test_data(tmp_path)
+    monkeypatch.setenv("DATA_DIR", str(tmp_path))
+    _clear_portal_modules()
+
+    app_module = importlib.import_module("portal.app")
+    response = app_module.app.test_client().get("/api/genes")
+
+    assert response.status_code == 200
+    genes = response.get_json()
+    gene_by_id = {gene["id"]: gene for gene in genes}
+    assert gene_by_id["GENE2"]["name"] is None

@@ -16,8 +16,8 @@ frontend tables.
 - Flask app: `portal/app.py` initializes the app and SQLAlchemy engine.
 - Views: `portal/routes/views.py` renders the HTML pages (home, browse, traits,
   genes, download).
-- API: `portal/routes/api_routes.py` exposes JSON endpoints for tissues, traits,
-  genes, and paginated table data.
+- API: `portal/routes/api_routes.py` exposes JSON endpoints for metadata,
+  tissues, traits, genes, and paginated table data.
 - Data access: `portal/services/query_service.py` executes SQL queries, applies
   AG Grid-style filters, and returns paginated results.
 - Frontend: Jinja templates in `portal/templates` plus JS/CSS in
