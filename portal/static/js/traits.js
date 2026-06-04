@@ -3,24 +3,6 @@ let traitsGridApi;
 let hitsGridApi;
 let portalMetadata;
 
-function buildAgGridQuery(params) {
-  let sortParams = "";
-  if (params.sortModel && params.sortModel.length > 0) {
-    sortParams = `&sort_by=${params.sortModel[0].colId}&order=${params.sortModel[0].sort}`;
-  }
-
-  let filterParams = "";
-  if (Object.keys(params.filterModel).length > 0) {
-    filterParams = `&filterModel=${encodeURIComponent(
-      JSON.stringify(params.filterModel)
-    )}`;
-  }
-
-  return `limit=${params.endRow - params.startRow}&offset=${
-    params.startRow
-  }${sortParams}${filterParams}`;
-}
-
 // Traits table
 
 Promise.all([
@@ -184,10 +166,7 @@ function loadTraitHits(traitId, traitName) {
         field: "gene_tss",
         type: "numericColumn",
         cellDataType: "number",
-        valueFormatter: (params) => {
-          if (params.value == null) return "";
-          return params.value.toLocaleString();
-        },
+        valueFormatter: PantryGrid.numberFormatter,
         sortable: true,
         filter: true,
         filterParams: {
@@ -218,10 +197,7 @@ function loadTraitHits(traitId, traitName) {
         field: "twas_p",
         type: "numericColumn",
         cellDataType: "number",
-        valueFormatter: (params) => {
-          if (params.value == null) return "";
-          return params.value.toExponential(2);
-        },
+        valueFormatter: PantryGrid.pValueFormatter,
         sortable: true,
         filter: true,
         filterParams: {
@@ -234,20 +210,14 @@ function loadTraitHits(traitId, traitName) {
     rowModelType: "infinite",
     cacheBlockSize: 100,
     maxBlocksInCache: 3,
-    datasource: {
-      getRows: function (params) {
-        fetch(`/api/trait-hits/${traitId}?${buildAgGridQuery(params)}`)
-          .then((response) => response.json())
-          .then((data) => {
-            params.successCallback(data.rows, data.totalCount);
-          })
-          .catch((error) => {
-            console.error("Error loading trait hits:", error);
-            params.failCallback();
-            alert("Failed to load trait hits. Please try again.");
-          });
-      },
-    },
+    datasource: PantryGrid.buildDatasource(
+      `/api/trait-hits/${encodeURIComponent(traitId)}`,
+      (error, params) => {
+        console.error("Error loading trait hits:", error);
+        params.failCallback();
+        alert("Failed to load trait hits. Please try again.");
+      }
+    ),
   };
 
   var eGridDiv = document.querySelector("#hits-table");

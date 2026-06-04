@@ -81,10 +81,7 @@ fetch("/api/genes")
           filterParams: {
             filterOptions: ["equals", "lessThan", "greaterThan"],
           },
-          valueFormatter: (params) => {
-            if (params.value == null) return "";
-            return params.value.toLocaleString();
-          },
+          valueFormatter: PantryGrid.numberFormatter,
           flex: 1,
         },
         {
@@ -96,10 +93,7 @@ fetch("/api/genes")
           filterParams: {
             filterOptions: ["equals", "lessThan", "greaterThan"],
           },
-          valueFormatter: (params) => {
-            if (params.value == null) return "";
-            return params.value.toLocaleString();
-          },
+          valueFormatter: PantryGrid.numberFormatter,
           flex: 1,
         },
         {
@@ -200,7 +194,7 @@ function loadGeneData(geneData) {
 // Function to load hits for a selected gene
 function loadGeneHits(geneId, geneName) {
   // Fetch hits data from the API
-  fetch(`/api/gene-hits/${geneId}`)
+  fetch(`/api/gene-hits/${encodeURIComponent(geneId)}`)
     .then((response) => response.json())
     .then((data) => {
       const rowData = data.hits;
@@ -273,10 +267,7 @@ function loadGeneHits(geneId, geneName) {
             field: "twas_p",
             type: "numericColumn",
             cellDataType: "number",
-            valueFormatter: (params) => {
-              if (params.value == null) return "";
-              return params.value.toExponential(2);
-            },
+            valueFormatter: PantryGrid.pValueFormatter,
             sortable: true,
             filter: true,
             filterParams: {
@@ -312,7 +303,7 @@ function loadGeneHits(geneId, geneName) {
 // Function to load xQTLs for a selected gene
 function loadGeneQtls(geneId, geneName) {
   // Fetch qtls data from the API
-  fetch(`/api/gene-qtls/${geneId}`)
+  fetch(`/api/gene-qtls/${encodeURIComponent(geneId)}`)
     .then((response) => response.json())
     .then((data) => {
       const rowData = data.qtls;
@@ -412,10 +403,7 @@ function loadGeneQtls(geneId, geneName) {
             field: "pos",
             type: "numericColumn",
             cellDataType: "number",
-            valueFormatter: (params) => {
-              if (params.value == null) return "";
-              return params.value.toLocaleString();
-            },
+            valueFormatter: PantryGrid.numberFormatter,
             sortable: true,
             filter: true,
             filterParams: {
@@ -428,10 +416,7 @@ function loadGeneQtls(geneId, geneName) {
             field: "pval_beta",
             type: "numericColumn",
             cellDataType: "number",
-            valueFormatter: (params) => {
-              if (params.value == null) return "";
-              return params.value.toExponential(2);
-            },
+            valueFormatter: PantryGrid.pValueFormatter,
             sortable: true,
             filter: true,
             filterParams: {

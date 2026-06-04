@@ -1,73 +1,3 @@
-const textColumn = {
-  sortable: true,
-  filter: true,
-  filterParams: { filterOptions: ["contains", "equals"] },
-};
-
-function buildAgGridQuery(params) {
-  let sortParams = "";
-  if (params.sortModel && params.sortModel.length > 0) {
-    sortParams = `&sort_by=${params.sortModel[0].colId}&order=${params.sortModel[0].sort}`;
-  }
-
-  let filterParams = "";
-  if (Object.keys(params.filterModel).length > 0) {
-    filterParams = `&filterModel=${encodeURIComponent(
-      JSON.stringify(params.filterModel)
-    )}`;
-  }
-
-  return `limit=${params.endRow - params.startRow}&offset=${
-    params.startRow
-  }${sortParams}${filterParams}`;
-}
-
-function addRowCount(gridId, params) {
-  const gridDiv = document.querySelector(`#${gridId}`);
-  const countDiv = document.createElement("div");
-  countDiv.style.padding = "8px";
-  countDiv.style.color = "#666";
-  gridDiv.parentNode.insertBefore(countDiv, gridDiv.nextSibling);
-
-  params.api.addEventListener("modelUpdated", function () {
-    const rowCount = params.api.getDisplayedRowCount();
-    countDiv.innerHTML = `Showing ${rowCount.toLocaleString()} rows`;
-  });
-}
-
-function buildDatasource(endpoint) {
-  return {
-    getRows: function (params) {
-      fetch(`${endpoint}?${buildAgGridQuery(params)}`)
-        .then((response) => response.json())
-        .then((data) => {
-          params.successCallback(data.rows, data.totalCount);
-        });
-    },
-  };
-}
-
-function selectColumn(headerName, field, values, flex = 1) {
-  return {
-    headerName,
-    field,
-    sortable: true,
-    filter: SelectFilter,
-    filterParams: { values },
-    flex,
-  };
-}
-
-function numberFormatter(params) {
-  if (params.value == null) return "";
-  return params.value.toLocaleString();
-}
-
-function pValueFormatter(params) {
-  if (params.value == null) return "";
-  return params.value.toExponential(2);
-}
-
 function buildColumns(metadata) {
   return {
     trait: {
@@ -76,8 +6,13 @@ function buildColumns(metadata) {
       type: "textColumn",
       flex: 2,
     },
-    tissue_name: selectColumn("Tissue", "tissue_name", metadata.tissueNames, 2),
-    tissue: selectColumn("Tissue ID", "tissue", metadata.tissues),
+    tissue_name: PantryGrid.selectColumn(
+      "Tissue",
+      "tissue_name",
+      metadata.tissueNames,
+      2
+    ),
+    tissue: PantryGrid.selectColumn("Tissue ID", "tissue", metadata.tissues),
     gene_name: {
       headerName: "Gene",
       field: "gene_name",
@@ -105,13 +40,17 @@ function buildColumns(metadata) {
       field: "gene_tss",
       type: "numericColumn",
       cellDataType: "number",
-      valueFormatter: numberFormatter,
+      valueFormatter: PantryGrid.numberFormatter,
       sortable: true,
       filter: true,
       filterParams: { filterOptions: ["equals", "lessThan", "greaterThan"] },
       flex: 1,
     },
-    modality: selectColumn("Modality", "modality", metadata.browseModalities),
+    modality: PantryGrid.selectColumn(
+      "Modality",
+      "modality",
+      metadata.browseModalities
+    ),
     phenotype_id: {
       headerName: "Phenotype ID",
       field: "phenotype_id",
@@ -125,7 +64,7 @@ function buildColumns(metadata) {
       field: "twas_p",
       type: "numericColumn",
       cellDataType: "number",
-      valueFormatter: pValueFormatter,
+      valueFormatter: PantryGrid.pValueFormatter,
       sortable: true,
       filter: true,
       filterParams: {
@@ -173,7 +112,7 @@ function buildColumns(metadata) {
       field: "pos",
       type: "numericColumn",
       cellDataType: "number",
-      valueFormatter: numberFormatter,
+      valueFormatter: PantryGrid.numberFormatter,
       sortable: true,
       filter: true,
       filterParams: { filterOptions: ["equals", "lessThan", "greaterThan"] },
@@ -184,7 +123,7 @@ function buildColumns(metadata) {
       field: "pval_beta",
       type: "numericColumn",
       cellDataType: "number",
-      valueFormatter: pValueFormatter,
+      valueFormatter: PantryGrid.pValueFormatter,
       sortable: true,
       filter: true,
       filterParams: {
@@ -197,19 +136,9 @@ function buildColumns(metadata) {
 }
 
 function createInfiniteGrid(gridId, endpoint, columnDefs) {
-  const gridOptions = {
-    columnTypes: {
-      textColumn,
-    },
-    columnDefs,
-    rowModelType: "infinite",
-    onGridReady: function (params) {
-      addRowCount(gridId, params);
-    },
-    datasource: buildDatasource(endpoint),
-  };
-
-  agGrid.createGrid(document.querySelector(`#${gridId}`), gridOptions);
+  PantryGrid.createInfiniteGrid(gridId, endpoint, columnDefs, {
+    showRowCount: true,
+  });
 }
 
 function initializeBrowseTables(metadata) {
