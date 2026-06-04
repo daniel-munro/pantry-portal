@@ -321,7 +321,7 @@ gzip -c ../laddr/twas/output/twas_hits.geuvadis-full-Geuvadis.tsv > data/process
     done < ../laddr/data/gtex/tissues.gtex.txt
 } | gzip > data/processed/gtex.ddp.hsq.tsv.gz
 
-# gtex.kdp_rddp.twas_hits.tsv.gz
+## gtex.kdp_rddp.twas_hits.tsv.gz
 {
     head -1 ../pantry/twas/output/twas_hits.ADPSBQ.alt_polyA.tsv | awk 'BEGIN{OFS="\t"} {print "tissue", "modality", $0}'
     while read tissue; do

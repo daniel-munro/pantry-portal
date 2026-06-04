@@ -57,6 +57,8 @@ data repository (`info/`, `processed/`, `covariates/`, etc.).
 - `scripts/prepare_data.sh`: syncs source data into `data/` and builds
   aggregated files.
 - `scripts/load_data.py`: loads TSV inputs into `data/data.db`.
+- `scripts/create_indexes.py`: adds SQLite indexes used by interactive trait,
+  gene, and QTL lookups in an existing `data/data.db`.
 - `scripts/compute_stats.py`: precomputes `trait_stats.json` and
   `gene_stats.json` from the DB.
 - `scripts/inspect_tables.sh`: prints sample rows from each SQLite table.
@@ -69,7 +71,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 export DATA_DIR=./data
-python portal/app.py
+python -m portal.app
 ```
 
 Production uses Gunicorn (see `Procfile`):

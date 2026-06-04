@@ -2,6 +2,35 @@
 let traitsGridApi;
 let hitsGridApi;
 
+const CHROMOSOMES = Array.from({ length: 22 }, (_, index) => `chr${index + 1}`);
+const MODALITIES = [
+  "Alternative polyA",
+  "Alternative TSS",
+  "Expression",
+  "Isoform ratio",
+  "Intron excision ratio",
+  "RNA stability",
+  "Latent residual",
+];
+
+function buildAgGridQuery(params) {
+  let sortParams = "";
+  if (params.sortModel && params.sortModel.length > 0) {
+    sortParams = `&sort_by=${params.sortModel[0].colId}&order=${params.sortModel[0].sort}`;
+  }
+
+  let filterParams = "";
+  if (Object.keys(params.filterModel).length > 0) {
+    filterParams = `&filterModel=${encodeURIComponent(
+      JSON.stringify(params.filterModel)
+    )}`;
+  }
+
+  return `limit=${params.endRow - params.startRow}&offset=${
+    params.startRow
+  }${sortParams}${filterParams}`;
+}
+
 // Traits table
 
 fetch("/api/traits")
@@ -121,148 +150,126 @@ function loadTraitHits(traitId, traitName) {
     .getElementById("hits-section")
     .scrollIntoView({ behavior: "smooth", block: "start" });
 
-  // Fetch hits data from the API
-  fetch(`/api/trait-hits/${traitId}`)
-    .then((response) => response.json())
-    .then((data) => {
-      const rowData = data.hits;
+  // If grid already exists, destroy it first
+  if (hitsGridApi) {
+    hitsGridApi.destroy();
+  }
 
-      // Extract unique values for each categorical column
-      const uniqueTissueNames = [
-        ...new Set(rowData.map((row) => row.tissue_name)),
-      ].sort();
-      const uniqueTissueIds = [
-        ...new Set(rowData.map((row) => row.tissue)),
-      ].sort();
-      const uniqueChroms = [
-        ...new Set(rowData.map((row) => row.gene_chrom)),
-      ].sort((a, b) => {
-        // Sort chromosomes numerically
-        const aNum = parseInt(a.replace("chr", ""));
-        const bNum = parseInt(b.replace("chr", ""));
-        return aNum - bNum;
-      });
-      const uniqueModalities = [
-        ...new Set(rowData.map((row) => row.modality)),
-      ].sort();
+  const gridOptions = {
+    columnDefs: [
+      {
+        headerName: "Tissue",
+        field: "tissue_name",
+        sortable: true,
+        filter: true,
+        filterParams: { filterOptions: ["contains", "equals"] },
+        flex: 2,
+      },
+      {
+        headerName: "Tissue ID",
+        field: "tissue",
+        sortable: true,
+        filter: true,
+        filterParams: { filterOptions: ["contains", "equals"] },
+        flex: 1,
+      },
+      {
+        headerName: "Gene",
+        field: "gene_name",
+        sortable: true,
+        filter: true,
+        filterParams: { filterOptions: ["equals", "contains"] },
+        flex: 1,
+      },
+      {
+        headerName: "Gene ID",
+        field: "gene_id",
+        sortable: true,
+        filter: true,
+        filterParams: { filterOptions: ["contains", "equals"] },
+        flex: 1,
+      },
+      {
+        headerName: "Chrom",
+        field: "gene_chrom",
+        sortable: false,
+        filter: SelectFilter,
+        filterParams: {
+          values: CHROMOSOMES,
+        },
+        flex: 1,
+      },
+      {
+        headerName: "TSS",
+        field: "gene_tss",
+        type: "numericColumn",
+        cellDataType: "number",
+        valueFormatter: (params) => {
+          if (params.value == null) return "";
+          return params.value.toLocaleString();
+        },
+        sortable: true,
+        filter: true,
+        filterParams: {
+          filterOptions: ["equals", "lessThan", "greaterThan"],
+        },
+        flex: 1,
+      },
+      {
+        headerName: "Modality",
+        field: "modality",
+        sortable: true,
+        filter: SelectFilter,
+        filterParams: {
+          values: MODALITIES,
+        },
+        flex: 1,
+      },
+      {
+        headerName: "Phenotype ID",
+        field: "phenotype_id",
+        sortable: true,
+        filter: true,
+        filterParams: { filterOptions: ["equals", "contains"] },
+        flex: 2,
+      },
+      {
+        headerName: "P-value",
+        field: "twas_p",
+        type: "numericColumn",
+        cellDataType: "number",
+        valueFormatter: (params) => {
+          if (params.value == null) return "";
+          return params.value.toExponential(2);
+        },
+        sortable: true,
+        filter: true,
+        filterParams: {
+          filterOptions: ["lessThan", "greaterThan"],
+          maxFiltersCount: 1,
+        },
+        flex: 1,
+      },
+    ],
+    rowModelType: "infinite",
+    cacheBlockSize: 100,
+    maxBlocksInCache: 3,
+    datasource: {
+      getRows: function (params) {
+        fetch(`/api/trait-hits/${traitId}?${buildAgGridQuery(params)}`)
+          .then((response) => response.json())
+          .then((data) => {
+            params.successCallback(data.rows, data.totalCount);
+          })
+          .catch((error) => {
+            console.error("Error loading trait hits:", error);
+            params.failCallback();
+            alert("Failed to load trait hits. Please try again.");
+          });
+      },
+    },
+  };
 
-      // Define columns for the hits table
-      const gridOptions = {
-        columnDefs: [
-          {
-            headerName: "Tissue",
-            field: "tissue_name",
-            sortable: true,
-            filter: SelectFilter,
-            filterParams: {
-              values: uniqueTissueNames,
-            },
-            flex: 2,
-          },
-          {
-            headerName: "Tissue ID",
-            field: "tissue",
-            sortable: true,
-            filter: SelectFilter,
-            filterParams: {
-              values: uniqueTissueIds,
-            },
-            flex: 1,
-          },
-          {
-            headerName: "Gene",
-            field: "gene_name",
-            sortable: true,
-            filter: true,
-            filterParams: { filterOptions: ["equals", "contains"] },
-            flex: 1,
-          },
-          {
-            headerName: "Gene ID",
-            field: "gene_id",
-            sortable: true,
-            filter: true,
-            filterParams: { filterOptions: ["contains", "equals"] },
-            flex: 1,
-          },
-          {
-            headerName: "Chrom",
-            field: "gene_chrom",
-            sortable: false,
-            filter: SelectFilter,
-            filterParams: {
-              values: uniqueChroms,
-            },
-            flex: 1,
-          },
-          {
-            headerName: "TSS",
-            field: "gene_tss",
-            type: "numericColumn",
-            cellDataType: "number",
-            valueFormatter: (params) => {
-              if (params.value == null) return "";
-              return params.value.toLocaleString();
-            },
-            sortable: true,
-            filter: true,
-            filterParams: {
-              filterOptions: ["equals", "lessThan", "greaterThan"],
-            },
-            flex: 1,
-          },
-          {
-            headerName: "Modality",
-            field: "modality",
-            sortable: true,
-            filter: SelectFilter,
-            filterParams: {
-              values: uniqueModalities,
-            },
-            flex: 1,
-          },
-          {
-            headerName: "Phenotype ID",
-            field: "phenotype_id",
-            sortable: true,
-            filter: true,
-            filterParams: { filterOptions: ["equals", "contains"] },
-            flex: 2,
-          },
-          {
-            headerName: "P-value",
-            field: "twas_p",
-            type: "numericColumn",
-            cellDataType: "number",
-            valueFormatter: (params) => {
-              if (params.value == null) return "";
-              return params.value.toExponential(2);
-            },
-            sortable: true,
-            filter: true,
-            filterParams: {
-              filterOptions: ["lessThan", "greaterThan"],
-              maxFiltersCount: 1,
-            },
-            flex: 1,
-          },
-        ],
-        rowData: rowData,
-        pagination: true,
-        paginationPageSize: 100,
-        paginationPageSizeSelector: [50, 100, 200, 500],
-      };
-
-      // If grid already exists, destroy it first
-      if (hitsGridApi) {
-        hitsGridApi.destroy();
-      }
-
-      var eGridDiv = document.querySelector("#hits-table");
-      hitsGridApi = agGrid.createGrid(eGridDiv, gridOptions);
-    })
-    .catch((error) => {
-      console.error("Error loading trait hits:", error);
-      alert("Failed to load trait hits. Please try again.");
-    });
+  var eGridDiv = document.querySelector("#hits-table");
+  hitsGridApi = agGrid.createGrid(eGridDiv, gridOptions);
 }

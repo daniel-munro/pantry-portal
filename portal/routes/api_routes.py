@@ -19,8 +19,8 @@ def init_api_routes(app, engine):
 
     @app.route('/api/trait-hits/<trait_id>')
     def get_trait_hits_api(trait_id):
-        hits = get_trait_hits(engine, trait_id)
-        return jsonify({'hits': hits})
+        response = get_trait_hits(engine, trait_id, request)
+        return jsonify(response)
 
     @app.route('/api/gene-hits/<gene_id>')
     def get_gene_hits_api(gene_id):

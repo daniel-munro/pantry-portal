@@ -2,7 +2,14 @@
 
 import gzip
 import pandas as pd
-from sqlalchemy import create_engine, Engine
+from sqlalchemy import create_engine, Engine, text
+
+INDEX_STATEMENTS = [
+    "CREATE INDEX IF NOT EXISTS idx_twas_hybrid_trait ON twas_hybrid(trait)",
+    "CREATE INDEX IF NOT EXISTS idx_twas_hybrid_trait_p ON twas_hybrid(trait, twas_p)",
+    "CREATE INDEX IF NOT EXISTS idx_twas_hybrid_gene_id ON twas_hybrid(gene_id)",
+    "CREATE INDEX IF NOT EXISTS idx_qtls_hybrid_gene_id ON qtls_hybrid(gene_id)",
+]
 
 def load_gene_info(gtf: str) -> pd.DataFrame:
     records = []    
@@ -102,6 +109,14 @@ def load_qtls_ddp(tsv_file: str, genes: pd.DataFrame, tissues: pd.DataFrame, eng
     )
     df.to_sql('qtls_ddp', engine, if_exists='fail', index=True, index_label='id')
 
+
+def create_indexes(engine: Engine) -> None:
+    """Create indexes used by interactive portal queries."""
+    with engine.begin() as conn:
+        for statement in INDEX_STATEMENTS:
+            conn.execute(text(statement))
+
+
 engine = create_engine('sqlite:///data/data.db')
 modality_map = {
     'alt_polyA': 'Alternative polyA',
@@ -121,3 +136,4 @@ if __name__ == '__main__':
     load_twas_ddp('data/processed/gtex.ddp.twas_hits.tsv.gz', genes, tissues, traits, engine)
     load_qtls_hybrid('data/processed/gtex.cross_modality_hybrid.qtls.tsv.gz', genes, tissues, modality_map, engine)
     load_qtls_ddp('data/processed/gtex.ddp.qtls.tsv.gz', genes, tissues, engine)
+    create_indexes(engine)
