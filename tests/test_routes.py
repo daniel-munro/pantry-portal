@@ -203,3 +203,24 @@ def test_view_routes_render_shared_nav_with_active_state(tmp_path, monkeypatch):
             r'class="nav-link active"\s+href="([^"]+)"\s+aria-current="page"',
             html,
         ) == [active_href]
+
+
+def test_browse_route_renders_lazy_grid_tabs(tmp_path, monkeypatch):
+    _write_test_data(tmp_path)
+    monkeypatch.setenv("DATA_DIR", str(tmp_path))
+    _clear_portal_modules()
+
+    app_module = importlib.import_module("portal.app")
+    response = app_module.app.test_client().get("/browse")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert 'id="browse-tabs"' in html
+    assert html.count('data-bs-toggle="tab"') == 4
+    for label in [
+        "xTWAS hybrid",
+        "xTWAS data-driven",
+        "cis-xQTL hybrid",
+        "cis-xQTL data-driven",
+    ]:
+        assert label in html

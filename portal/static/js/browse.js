@@ -141,65 +141,104 @@ function createInfiniteGrid(gridId, endpoint, columnDefs) {
   });
 }
 
-function initializeBrowseTables(metadata) {
+function buildGridConfigs(metadata) {
   const columns = buildColumns(metadata);
 
-  createInfiniteGrid("twas-hybrid-grid", "/api/twas-hybrid", [
-    columns.trait,
-    columns.tissue_name,
-    columns.tissue,
-    columns.gene_name,
-    columns.gene_id,
-    columns.gene_chrom,
-    columns.gene_tss,
-    columns.modality,
-    columns.phenotype_id,
-    columns.twas_p,
-  ]);
+  return {
+    "twas-hybrid-tab": {
+      gridId: "twas-hybrid-grid",
+      endpoint: "/api/twas-hybrid",
+      columnDefs: [
+        columns.trait,
+        columns.tissue_name,
+        columns.tissue,
+        columns.gene_name,
+        columns.gene_id,
+        columns.gene_chrom,
+        columns.gene_tss,
+        columns.modality,
+        columns.phenotype_id,
+        columns.twas_p,
+      ],
+    },
+    "twas-ddp-tab": {
+      gridId: "twas-ddp-grid",
+      endpoint: "/api/twas-ddp",
+      columnDefs: [
+        columns.trait,
+        columns.tissue_name,
+        columns.tissue,
+        columns.gene_name,
+        columns.gene_id,
+        columns.gene_chrom,
+        columns.gene_tss,
+        columns.ddp,
+        columns.twas_p,
+      ],
+    },
+    "qtls-hybrid-tab": {
+      gridId: "qtls-hybrid-grid",
+      endpoint: "/api/qtls-hybrid",
+      columnDefs: [
+        columns.tissue_name,
+        columns.tissue,
+        columns.gene_name,
+        columns.gene_id,
+        columns.rank,
+        columns.modality,
+        columns.phenotype_id,
+        columns.variant_id,
+        columns.chrom,
+        columns.pos,
+        columns.pval_beta,
+      ],
+    },
+    "qtls-ddp-tab": {
+      gridId: "qtls-ddp-grid",
+      endpoint: "/api/qtls-ddp",
+      columnDefs: [
+        columns.tissue_name,
+        columns.tissue,
+        columns.gene_name,
+        columns.gene_id,
+        columns.rank,
+        columns.ddp,
+        columns.variant_id,
+        columns.chrom,
+        columns.pos,
+        columns.pval_beta,
+      ],
+    },
+  };
+}
 
-  createInfiniteGrid("twas-ddp-grid", "/api/twas-ddp", [
-    columns.trait,
-    columns.tissue_name,
-    columns.tissue,
-    columns.gene_name,
-    columns.gene_id,
-    columns.gene_chrom,
-    columns.gene_tss,
-    columns.ddp,
-    columns.twas_p,
-  ]);
+function initializeBrowseTabs(metadata) {
+  const gridConfigs = buildGridConfigs(metadata);
+  const initializedTabs = new Set();
 
-  createInfiniteGrid("qtls-hybrid-grid", "/api/qtls-hybrid", [
-    columns.tissue_name,
-    columns.tissue,
-    columns.gene_name,
-    columns.gene_id,
-    columns.rank,
-    columns.modality,
-    columns.phenotype_id,
-    columns.variant_id,
-    columns.chrom,
-    columns.pos,
-    columns.pval_beta,
-  ]);
+  function initializeTab(tabId) {
+    const config = gridConfigs[tabId];
+    if (!config || initializedTabs.has(tabId)) return;
 
-  createInfiniteGrid("qtls-ddp-grid", "/api/qtls-ddp", [
-    columns.tissue_name,
-    columns.tissue,
-    columns.gene_name,
-    columns.gene_id,
-    columns.rank,
-    columns.ddp,
-    columns.variant_id,
-    columns.chrom,
-    columns.pos,
-    columns.pval_beta,
-  ]);
+    initializedTabs.add(tabId);
+    createInfiniteGrid(config.gridId, config.endpoint, config.columnDefs);
+  }
+
+  document.querySelectorAll('[data-bs-toggle="tab"]').forEach((tab) => {
+    tab.addEventListener("shown.bs.tab", (event) => {
+      initializeTab(event.target.id);
+    });
+  });
+
+  const activeTab = document.querySelector("#browse-tabs .nav-link.active");
+  if (activeTab) {
+    initializeTab(activeTab.id);
+  }
 }
 
 fetch("/api/metadata")
   .then((response) => response.json())
-  .then(initializeBrowseTables)
+  .then(initializeBrowseTabs)
   .catch((error) => {
     console.error("Error loading portal metadata:", error);
   });
