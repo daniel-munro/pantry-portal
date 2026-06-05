@@ -1,6 +1,6 @@
 """Define REST API endpoints for serving data to the frontend."""
 
-from flask import jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 from portal.catalog import (
     BROWSE_MODALITIES,
     CHROMOSOMES,
@@ -19,66 +19,84 @@ from portal.services.query_service import (
     get_trait_hits,
 )
 
-def init_api_routes(app, engine):
-    @app.route('/api/tissues')
-    def get_tissues():
-        return jsonify(TISSUES)
+api_bp = Blueprint('api', __name__, url_prefix='/api')
 
-    @app.route('/api/traits')
-    def get_traits():
-        return jsonify(TRAITS)
 
-    @app.route('/api/genes')
-    def get_genes():
-        return jsonify(GENES)
+def get_engine():
+    """Return the database engine configured for API route handlers."""
+    return current_app.config['DATABASE_ENGINE']
 
-    @app.route('/api/metadata')
-    def get_metadata():
-        return jsonify({
-            'browseModalities': BROWSE_MODALITIES,
-            'chromosomes': CHROMOSOMES,
-            'downloadModalities': DOWNLOAD_MODALITIES,
-            'downloadQtlModalities': DOWNLOAD_QTL_MODALITIES,
-            'tissueNames': get_distinct_column_values(
-                engine,
-                'twas_hybrid',
-                'tissue_name',
-            ),
-            'tissues': TISSUES,
-            'traitCategories': TRAIT_CATEGORIES,
-        })
 
-    @app.route('/api/trait-hits/<trait_id>')
-    def get_trait_hits_api(trait_id):
-        response = get_trait_hits(engine, trait_id, request)
-        return jsonify(response)
+@api_bp.route('/tissues')
+def get_tissues():
+    return jsonify(TISSUES)
 
-    @app.route('/api/gene-hits/<gene_id>')
-    def get_gene_hits_api(gene_id):
-        hits = get_gene_hits(engine, gene_id)
-        return jsonify({'hits': hits})
 
-    @app.route('/api/gene-qtls/<gene_id>')
-    def get_gene_qtls_api(gene_id):
-        qtls = get_gene_qtls(engine, gene_id)
-        return jsonify({'qtls': qtls})
+@api_bp.route('/traits')
+def get_traits():
+    return jsonify(TRAITS)
 
-    @app.route('/api/twas-hybrid', methods=['GET'])
-    def get_twas():
-        response = ag_grid_query(engine, 'twas_hybrid', request)
-        return jsonify(response)
 
-    @app.route('/api/twas-ddp', methods=['GET'])
-    def get_twas_ddp():
-        response = ag_grid_query(engine, 'twas_ddp', request)
-        return jsonify(response)
+@api_bp.route('/genes')
+def get_genes():
+    return jsonify(GENES)
 
-    @app.route('/api/qtls-hybrid', methods=['GET'])
-    def get_qtls_hybrid():
-        response = ag_grid_query(engine, 'qtls_hybrid', request)
-        return jsonify(response)
 
-    @app.route('/api/qtls-ddp', methods=['GET'])
-    def get_qtls_ddp():
-        response = ag_grid_query(engine, 'qtls_ddp', request)
-        return jsonify(response)
+@api_bp.route('/metadata')
+def get_metadata():
+    engine = get_engine()
+    return jsonify({
+        'browseModalities': BROWSE_MODALITIES,
+        'chromosomes': CHROMOSOMES,
+        'downloadModalities': DOWNLOAD_MODALITIES,
+        'downloadQtlModalities': DOWNLOAD_QTL_MODALITIES,
+        'tissueNames': get_distinct_column_values(
+            engine,
+            'twas_hybrid',
+            'tissue_name',
+        ),
+        'tissues': TISSUES,
+        'traitCategories': TRAIT_CATEGORIES,
+    })
+
+
+@api_bp.route('/trait-hits/<trait_id>')
+def get_trait_hits_api(trait_id):
+    response = get_trait_hits(get_engine(), trait_id, request)
+    return jsonify(response)
+
+
+@api_bp.route('/gene-hits/<gene_id>')
+def get_gene_hits_api(gene_id):
+    hits = get_gene_hits(get_engine(), gene_id)
+    return jsonify({'hits': hits})
+
+
+@api_bp.route('/gene-qtls/<gene_id>')
+def get_gene_qtls_api(gene_id):
+    qtls = get_gene_qtls(get_engine(), gene_id)
+    return jsonify({'qtls': qtls})
+
+
+@api_bp.route('/twas-hybrid', methods=['GET'])
+def get_twas():
+    response = ag_grid_query(get_engine(), 'twas_hybrid', request)
+    return jsonify(response)
+
+
+@api_bp.route('/twas-ddp', methods=['GET'])
+def get_twas_ddp():
+    response = ag_grid_query(get_engine(), 'twas_ddp', request)
+    return jsonify(response)
+
+
+@api_bp.route('/qtls-hybrid', methods=['GET'])
+def get_qtls_hybrid():
+    response = ag_grid_query(get_engine(), 'qtls_hybrid', request)
+    return jsonify(response)
+
+
+@api_bp.route('/qtls-ddp', methods=['GET'])
+def get_qtls_ddp():
+    response = ag_grid_query(get_engine(), 'qtls_ddp', request)
+    return jsonify(response)
