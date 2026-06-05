@@ -1,5 +1,6 @@
 import importlib
 import json
+import re
 import sqlite3
 import sys
 
@@ -174,3 +175,31 @@ def test_genes_endpoint_serializes_missing_gene_names_as_null(tmp_path, monkeypa
     genes = response.get_json()
     gene_by_id = {gene["id"]: gene for gene in genes}
     assert gene_by_id["GENE2"]["name"] is None
+
+
+def test_view_routes_render_shared_nav_with_active_state(tmp_path, monkeypatch):
+    _write_test_data(tmp_path)
+    monkeypatch.setenv("DATA_DIR", str(tmp_path))
+    _clear_portal_modules()
+
+    app_module = importlib.import_module("portal.app")
+    client = app_module.app.test_client()
+    pages = [
+        ("/", "Pantry Portal", "/"),
+        ("/browse", "Browse - Pantry Portal", "/browse"),
+        ("/traits", "Traits - Pantry Portal", "/traits"),
+        ("/genes", "Genes - Pantry Portal", "/genes"),
+        ("/download", "Download - Pantry Portal", "/download"),
+    ]
+
+    for path, title, active_href in pages:
+        response = client.get(path)
+        html = response.get_data(as_text=True)
+
+        assert response.status_code == 200
+        assert f"<title>{title}</title>" in html
+        assert html.count("navbar navbar-expand-lg navbar-dark bg-dark") == 1
+        assert re.findall(
+            r'class="nav-link active"\s+href="([^"]+)"\s+aria-current="page"',
+            html,
+        ) == [active_href]
