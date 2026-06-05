@@ -177,6 +177,57 @@ def test_genes_endpoint_serializes_missing_gene_names_as_null(tmp_path, monkeypa
     assert gene_by_id["GENE2"]["name"] is None
 
 
+def test_simple_api_routes_smoke(tmp_path, monkeypatch):
+    _write_test_data(tmp_path)
+    monkeypatch.setenv("DATA_DIR", str(tmp_path))
+    _clear_portal_modules()
+
+    app_module = importlib.import_module("portal.app")
+    client = app_module.app.test_client()
+
+    tissues_response = client.get("/api/tissues")
+    assert tissues_response.status_code == 200
+    assert tissues_response.get_json() == ["T1", "T2"]
+
+    traits_response = client.get("/api/traits")
+    assert traits_response.status_code == 200
+    assert [trait["id"] for trait in traits_response.get_json()] == [
+        "trait_a",
+        "trait_b",
+    ]
+
+    gene_hits_response = client.get("/api/gene-hits/GENE1")
+    assert gene_hits_response.status_code == 200
+    assert gene_hits_response.get_json()["hits"][0]["gene_id"] == "GENE1"
+
+    gene_qtls_response = client.get("/api/gene-qtls/GENE1")
+    assert gene_qtls_response.status_code == 200
+    assert gene_qtls_response.get_json() == {"qtls": []}
+
+
+def test_browse_ag_grid_api_routes_smoke(tmp_path, monkeypatch):
+    _write_test_data(tmp_path)
+    monkeypatch.setenv("DATA_DIR", str(tmp_path))
+    _clear_portal_modules()
+
+    app_module = importlib.import_module("portal.app")
+    client = app_module.app.test_client()
+
+    for endpoint in [
+        "/api/twas-hybrid",
+        "/api/twas-ddp",
+        "/api/qtls-hybrid",
+        "/api/qtls-ddp",
+    ]:
+        response = client.get(endpoint, query_string={"limit": 2, "offset": 0})
+        data = response.get_json()
+
+        assert response.status_code == 200
+        assert set(data) == {"rows", "totalCount"}
+        assert isinstance(data["rows"], list)
+        assert isinstance(data["totalCount"], int)
+
+
 def test_view_routes_render_shared_nav_with_active_state(tmp_path, monkeypatch):
     _write_test_data(tmp_path)
     monkeypatch.setenv("DATA_DIR", str(tmp_path))

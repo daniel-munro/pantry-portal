@@ -3,6 +3,7 @@ import json
 import sqlite3
 import sys
 
+import pytest
 from flask import Flask, request
 from sqlalchemy import create_engine
 
@@ -42,7 +43,7 @@ def _write_query_table(db_path):
     conn = sqlite3.connect(db_path)
     conn.execute(
         """
-        CREATE TABLE example_hits (
+        CREATE TABLE twas_hybrid (
             id INTEGER,
             label TEXT,
             category TEXT,
@@ -51,7 +52,7 @@ def _write_query_table(db_path):
         """
     )
     conn.executemany(
-        "INSERT INTO example_hits VALUES (?, ?, ?, ?)",
+        "INSERT INTO twas_hybrid VALUES (?, ?, ?, ?)",
         [
             (1, "alpha", "A", 0.30),
             (2, "beta", "B", 0.10),
@@ -87,7 +88,7 @@ def test_ag_grid_query_paginates_and_sorts(tmp_path, monkeypatch):
     app = Flask(__name__)
 
     with app.test_request_context("/?limit=2&offset=1&sort_by=value&order=desc"):
-        response = ag_grid_query(engine, "example_hits", request)
+        response = ag_grid_query(engine, "twas_hybrid", request)
 
     assert response["totalCount"] == 4
     assert [row["label"] for row in response["rows"]] == ["alpha", "alphabet"]
@@ -114,7 +115,7 @@ def test_ag_grid_query_applies_contains_filter(tmp_path, monkeypatch):
             "filterModel": filter_model,
         },
     ):
-        response = ag_grid_query(engine, "example_hits", request)
+        response = ag_grid_query(engine, "twas_hybrid", request)
 
     assert response["totalCount"] == 2
     assert [row["label"] for row in response["rows"]] == ["alpha", "alphabet"]
@@ -144,7 +145,91 @@ def test_ag_grid_query_applies_compound_numeric_filter(tmp_path, monkeypatch):
             "filterModel": filter_model,
         },
     ):
-        response = ag_grid_query(engine, "example_hits", request)
+        response = ag_grid_query(engine, "twas_hybrid", request)
 
     assert response["totalCount"] == 2
     assert [row["label"] for row in response["rows"]] == ["alphabet", "alpha"]
+
+
+def test_ag_grid_query_rejects_unlisted_table(tmp_path, monkeypatch):
+    ag_grid_query, engine = _load_ag_grid_query(tmp_path, monkeypatch)
+    app = Flask(__name__)
+
+    with app.test_request_context("/"):
+        with pytest.raises(ValueError, match="Unsupported AG Grid table"):
+            ag_grid_query(engine, "not_allowed", request)
+
+
+def test_ag_grid_query_invalid_sort_column_falls_back_to_id(tmp_path, monkeypatch):
+    ag_grid_query, engine = _load_ag_grid_query(tmp_path, monkeypatch)
+    app = Flask(__name__)
+
+    with app.test_request_context("/?limit=3&sort_by=missing&order=desc"):
+        response = ag_grid_query(engine, "twas_hybrid", request)
+
+    assert response["totalCount"] == 4
+    assert [row["label"] for row in response["rows"]] == [
+        "alpha",
+        "beta",
+        "alphabet",
+    ]
+
+
+def test_ag_grid_query_applies_select_filter(tmp_path, monkeypatch):
+    ag_grid_query, engine = _load_ag_grid_query(tmp_path, monkeypatch)
+    app = Flask(__name__)
+    filter_model = json.dumps({
+        "category": {
+            "filterType": "select",
+            "values": ["A", "C"],
+        }
+    })
+
+    with app.test_request_context(
+        "/",
+        query_string={
+            "limit": 10,
+            "offset": 0,
+            "sort_by": "id",
+            "order": "asc",
+            "filterModel": filter_model,
+        },
+    ):
+        response = ag_grid_query(engine, "twas_hybrid", request)
+
+    assert response["totalCount"] == 3
+    assert [row["label"] for row in response["rows"]] == [
+        "alpha",
+        "alphabet",
+        "gamma",
+    ]
+
+
+def test_ag_grid_query_applies_compound_numeric_or_filter(tmp_path, monkeypatch):
+    ag_grid_query, engine = _load_ag_grid_query(tmp_path, monkeypatch)
+    app = Flask(__name__)
+    filter_model = json.dumps({
+        "value": {
+            "filterType": "number",
+            "operator": "OR",
+            "conditions": [
+                {"type": "lessThan", "filter": 0.15},
+                {"type": "greaterThan", "filter": 0.35},
+            ],
+        }
+    })
+
+    with app.test_request_context(
+        "/",
+        query_string={
+            "limit": 10,
+            "offset": 0,
+            "sort_by": "id",
+            "order": "asc",
+            "filterModel": filter_model,
+        },
+    ):
+        response = ag_grid_query(engine, "twas_hybrid", request)
+
+    assert response["totalCount"] == 2
+    assert [row["label"] for row in response["rows"]] == ["beta", "gamma"]

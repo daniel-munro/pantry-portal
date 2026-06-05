@@ -7,6 +7,13 @@ from portal.catalog import TRAITS
 
 TRAIT_NAME_BY_ID = {trait['id']: trait['name'] for trait in TRAITS}
 
+AG_GRID_TABLES = {
+    'twas_hybrid',
+    'twas_ddp',
+    'qtls_hybrid',
+    'qtls_ddp',
+}
+
 TWAS_HYBRID_COLUMNS = [
     'id',
     'trait',
@@ -179,6 +186,9 @@ def get_gene_qtls(engine: db.engine.Engine, gene_id: str) -> list:
     return qtls
 
 def ag_grid_query(engine: db.engine.Engine, table_name: str, request: Request) -> dict:
+    if table_name not in AG_GRID_TABLES:
+        raise ValueError(f'Unsupported AG Grid table: {table_name}')
+
     table = db.Table(table_name, db.MetaData(), autoload_with=engine)
     query = db.select(table)
     return _ag_grid_page(engine, table, request, query)
