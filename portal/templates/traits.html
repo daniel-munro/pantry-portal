@@ -1,44 +1,35 @@
-{% extends "base.html" %}
-{% set active_page = "traits" %}
+{% extends "base.html" %} {% set active_page = "traits" %} {% block title
+%}Traits - Pantry Portal{% endblock %} {% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+<script src="{{ url_for('static', filename='js/select-filter.js') }}"></script>
+<script
+  src="{{ url_for('static', filename='js/ag-grid-utils.js') }}"
+  defer
+></script>
+<script src="{{ url_for('static', filename='js/traits.js') }}" defer></script>
+{% endblock %} {% block content %}
 
-{% block title %}Traits - Pantry Portal{% endblock %}
+<div class="container-fluid">
+  <div class="container" style="max-width: 1000px">
+    <h1 class="mt-4 mb-4 text-center">Traits</h1>
 
-{% block head_extra %}
-    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
-    <script src="{{ url_for('static', filename='js/select-filter.js') }}"></script>
-    <script
-      src="{{ url_for('static', filename='js/ag-grid-utils.js') }}"
-      defer
-    ></script>
-    <script
-      src="{{ url_for('static', filename='js/traits.js') }}"
-      defer
-    ></script>
-{% endblock %}
+    <h3>Select a Trait</h3>
+  </div>
+  <div
+    id="traits-table"
+    style="height: 500px; width: 100%"
+    class="ag-theme-alpine mb-4"
+  ></div>
 
-{% block content %}
-
-    <div class="container-fluid">
-      <div class="container" style="max-width: 1000px">
-        <h1 class="mt-4 mb-4 text-center">Traits</h1>
-
-        <h3>Select a Trait</h3>
-      </div>
-      <div
-        id="traits-table"
-        style="height: 500px; width: 100%"
-        class="ag-theme-alpine mb-4"
-      ></div>
-
-      <div class="container" style="max-width: 1000px">
-        <div id="hits-section" style="display: none">
-          <h3 id="selected-trait-title">xTWAS Hits</h3>
-        </div>
-      </div>
-      <div
-        id="hits-table"
-        style="height: 600px; width: 100%; display: none"
-        class="ag-theme-alpine"
-      ></div>
+  <div class="container" style="max-width: 1000px">
+    <div id="hits-section" style="display: none">
+      <h3 id="selected-trait-title">xTWAS Hits</h3>
     </div>
+  </div>
+  <div
+    id="hits-table"
+    style="height: 600px; width: 100%; display: none"
+    class="ag-theme-alpine"
+  ></div>
+</div>
 {% endblock %}

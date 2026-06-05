@@ -1,169 +1,156 @@
-{% extends "base.html" %}
-{% set active_page = "browse" %}
+{% extends "base.html" %} {% set active_page = "browse" %} {% block title
+%}Browse - Pantry Portal{% endblock %} {% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+<script src="{{ url_for('static', filename='js/select-filter.js') }}"></script>
+<script
+  src="{{ url_for('static', filename='js/ag-grid-utils.js') }}"
+  defer
+></script>
+<script src="{{ url_for('static', filename='js/browse.js') }}" defer></script>
+{% endblock %} {% block content %}
+<div class="container-fluid">
+  <div class="container" style="max-width: 1000px">
+    <h1 class="mt-4 mb-4 text-center">Browse</h1>
 
-{% block title %}Browse - Pantry Portal{% endblock %}
+    <ul class="nav nav-tabs mb-3" id="browse-tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="twas-hybrid-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#twas-hybrid-pane"
+          type="button"
+          role="tab"
+          aria-controls="twas-hybrid-pane"
+          aria-selected="true"
+        >
+          xTWAS hybrid
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="twas-ddp-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#twas-ddp-pane"
+          type="button"
+          role="tab"
+          aria-controls="twas-ddp-pane"
+          aria-selected="false"
+        >
+          xTWAS data-driven
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="qtls-hybrid-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#qtls-hybrid-pane"
+          type="button"
+          role="tab"
+          aria-controls="qtls-hybrid-pane"
+          aria-selected="false"
+        >
+          cis-xQTL hybrid
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="qtls-ddp-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#qtls-ddp-pane"
+          type="button"
+          role="tab"
+          aria-controls="qtls-ddp-pane"
+          aria-selected="false"
+        >
+          cis-xQTL data-driven
+        </button>
+      </li>
+    </ul>
+  </div>
 
-{% block head_extra %}
-    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
-    <script src="{{ url_for('static', filename='js/select-filter.js') }}"></script>
-    <script
-      src="{{ url_for('static', filename='js/ag-grid-utils.js') }}"
-      defer
-    ></script>
-    <script
-      src="{{ url_for('static', filename='js/browse.js') }}"
-      defer
-    ></script>
-{% endblock %}
-
-{% block content %}
-    <div class="container-fluid">
+  <div class="tab-content" id="browse-tabs-content">
+    <div
+      class="tab-pane fade show active"
+      id="twas-hybrid-pane"
+      role="tabpanel"
+      aria-labelledby="twas-hybrid-tab"
+      tabindex="0"
+    >
       <div class="container" style="max-width: 1000px">
-        <h1 class="mt-4 mb-4 text-center">Browse</h1>
-
-        <ul class="nav nav-tabs mb-3" id="browse-tabs" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link active"
-              id="twas-hybrid-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#twas-hybrid-pane"
-              type="button"
-              role="tab"
-              aria-controls="twas-hybrid-pane"
-              aria-selected="true"
-            >
-              xTWAS hybrid
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="twas-ddp-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#twas-ddp-pane"
-              type="button"
-              role="tab"
-              aria-controls="twas-ddp-pane"
-              aria-selected="false"
-            >
-              xTWAS data-driven
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="qtls-hybrid-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#qtls-hybrid-pane"
-              type="button"
-              role="tab"
-              aria-controls="qtls-hybrid-pane"
-              aria-selected="false"
-            >
-              cis-xQTL hybrid
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="qtls-ddp-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#qtls-ddp-pane"
-              type="button"
-              role="tab"
-              aria-controls="qtls-ddp-pane"
-              aria-selected="false"
-            >
-              cis-xQTL data-driven
-            </button>
-          </li>
-        </ul>
+        <p>
+          A TWAS transcriptional model was computed for each RNA phenotype in
+          each GTEx tissue, and TWAS was performed using
+          <a href="https://github.com/gusevlab/fusion_twas">FUSION</a> and
+          summary stats for each of
+          <a href="https://zenodo.org/records/3629742#.XjCh9OF7m90">
+            114 GWAS traits previously harmonized to GTEx v8 variant
+            reference</a
+          >. Associations between all RNA phenotypes and all traits in each
+          tissue were filtered with a genome-wide P-value threshold of 5e-8.
+          This table includes all six modalities of RNA phenotypes generated
+          with Pantry, plus residual data-driven phenotypes generated with
+          LaDDR.
+        </p>
       </div>
-
-      <div class="tab-content" id="browse-tabs-content">
-        <div
-          class="tab-pane fade show active"
-          id="twas-hybrid-pane"
-          role="tabpanel"
-          aria-labelledby="twas-hybrid-tab"
-          tabindex="0"
-        >
-          <div class="container" style="max-width: 1000px">
-            <p>
-              A TWAS transcriptional model was computed for each RNA phenotype
-              in each GTEx tissue, and TWAS was performed using
-              <a href="https://github.com/gusevlab/fusion_twas">FUSION</a> and
-              summary stats for each of
-              <a href="https://zenodo.org/records/3629742#.XjCh9OF7m90">
-                114 GWAS traits previously harmonized to GTEx v8 variant
-                reference</a
-              >. Associations between all RNA phenotypes and all traits in each
-              tissue were filtered with a genome-wide P-value threshold of 5e-8.
-              This table includes all six modalities of RNA phenotypes
-              generated with Pantry, plus residual data-driven phenotypes
-              generated with LaDDR.
-            </p>
-          </div>
-          <div
-            id="twas-hybrid-grid"
-            class="ag-theme-alpine browse-grid"
-          ></div>
-        </div>
-
-        <div
-          class="tab-pane fade"
-          id="twas-ddp-pane"
-          role="tabpanel"
-          aria-labelledby="twas-ddp-tab"
-          tabindex="0"
-        >
-          <div class="container" style="max-width: 1000px">
-            <p>
-              Results for xTWAS on full data-driven phenotypes generated with
-              LaDDR.
-            </p>
-          </div>
-          <div id="twas-ddp-grid" class="ag-theme-alpine browse-grid"></div>
-        </div>
-
-        <div
-          class="tab-pane fade"
-          id="qtls-hybrid-pane"
-          role="tabpanel"
-          aria-labelledby="qtls-hybrid-tab"
-          tabindex="0"
-        >
-          <div class="container" style="max-width: 1000px">
-            <p>
-              cis-xQTLs were mapped for each GTEx tissue using
-              <a href="https://github.com/broadinstitute/tensorqtl">tensorQTL</a>
-              and Pantry's cross-modality mapping technique, so they are
-              conditionally independent, even across modalities, within each
-              tissue-gene pair. They are ranked in the order of discovery using
-              stepwise regression per tissue-gene pair, which roughly
-              corresponds to descending association strength. Only the top
-              variant per QTL is shown, which is not necessarily the causal
-              variant. This table includes hybrid mapping of all six modalities
-              of RNA phenotypes generated with Pantry, plus residual
-              data-driven phenotypes generated with LaDDR.
-            </p>
-          </div>
-          <div id="qtls-hybrid-grid" class="ag-theme-alpine browse-grid"></div>
-        </div>
-
-        <div
-          class="tab-pane fade"
-          id="qtls-ddp-pane"
-          role="tabpanel"
-          aria-labelledby="qtls-ddp-tab"
-          tabindex="0"
-        >
-          <div class="container" style="max-width: 1000px">
-            <p>cis-xQTLs for full data-driven phenotypes generated with LaDDR.</p>
-          </div>
-          <div id="qtls-ddp-grid" class="ag-theme-alpine browse-grid"></div>
-        </div>
-      </div>
+      <div id="twas-hybrid-grid" class="ag-theme-alpine browse-grid"></div>
     </div>
+
+    <div
+      class="tab-pane fade"
+      id="twas-ddp-pane"
+      role="tabpanel"
+      aria-labelledby="twas-ddp-tab"
+      tabindex="0"
+    >
+      <div class="container" style="max-width: 1000px">
+        <p>
+          Results for xTWAS on full data-driven phenotypes generated with LaDDR.
+        </p>
+      </div>
+      <div id="twas-ddp-grid" class="ag-theme-alpine browse-grid"></div>
+    </div>
+
+    <div
+      class="tab-pane fade"
+      id="qtls-hybrid-pane"
+      role="tabpanel"
+      aria-labelledby="qtls-hybrid-tab"
+      tabindex="0"
+    >
+      <div class="container" style="max-width: 1000px">
+        <p>
+          cis-xQTLs were mapped for each GTEx tissue using
+          <a href="https://github.com/broadinstitute/tensorqtl">tensorQTL</a>
+          and Pantry's cross-modality mapping technique, so they are
+          conditionally independent, even across modalities, within each
+          tissue-gene pair. They are ranked in the order of discovery using
+          stepwise regression per tissue-gene pair, which roughly corresponds to
+          descending association strength. Only the top variant per QTL is
+          shown, which is not necessarily the causal variant. This table
+          includes hybrid mapping of all six modalities of RNA phenotypes
+          generated with Pantry, plus residual data-driven phenotypes generated
+          with LaDDR.
+        </p>
+      </div>
+      <div id="qtls-hybrid-grid" class="ag-theme-alpine browse-grid"></div>
+    </div>
+
+    <div
+      class="tab-pane fade"
+      id="qtls-ddp-pane"
+      role="tabpanel"
+      aria-labelledby="qtls-ddp-tab"
+      tabindex="0"
+    >
+      <div class="container" style="max-width: 1000px">
+        <p>cis-xQTLs for full data-driven phenotypes generated with LaDDR.</p>
+      </div>
+      <div id="qtls-ddp-grid" class="ag-theme-alpine browse-grid"></div>
+    </div>
+  </div>
+</div>
 {% endblock %}

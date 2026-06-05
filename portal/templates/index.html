@@ -1,90 +1,176 @@
-{% extends "base.html" %}
-{% set active_page = "home" %}
+{% extends "base.html" %} {% set active_page = "home" %} {% block content %}
 
-{% block content %}
-
-    <div class="container">
-      <div class="text-center mt-4 mb-4">
+<section class="home-hero">
+  <div class="container">
+    <div class="hero-panel">
+      <div class="hero-logo-row">
         <img
           src="{{ url_for('static', filename='img/Pantry_logo.png') }}"
-          alt="Pantry Portal"
-          class="logo-hero"
+          alt="Pantry"
+          class="logo-hero logo-pantry"
+        />
+        <span class="logo-link" aria-hidden="true">+</span>
+        <img
+          src="{{ url_for('static', filename='img/LaDDR_logo.png') }}"
+          alt="LaDDR"
+          class="logo-hero logo-laddr"
         />
       </div>
 
-      <p class="limited-text">
-        This portal contains the results of multimodal RNA phenotyping and
-        genetic analyses for 50 human tissue datasets using Pantry. It includes
-        RNA phenotypes, covariates, cis-xQTL results from tensorQTL, and weights
-        and associations for multimodal transcriptome-wide association study
-        (xTWAS) results using FUSION, for six RNA modalities, for Geuvadis and
-        49 GTEx tissues. It also includes data for residual data-driven RNA
-        phenotypes produced by LaDDR to supplement the knowledge-driven RNA
-        phenotypes, as well as data for full data-driven RNA phenotypes that can
-        be used as an alternative to knowledge-driven RNA phenotypes. The xTWAS
-        data covers 114 traits using GWAS data from
-        <a href="https://doi.org/10.5281/zenodo.3629742">this collection</a>.
-      </p>
+      <div class="hero-copy">
+        <p class="eyebrow">RNA phenotyping and genetic analysis portal</p>
+        <h1>Explore Pantry and LaDDR results across human tissues.</h1>
+        <p>
+          This portal contains multimodal RNA phenotypes, covariates, cis-xQTL
+          results from tensorQTL, and xTWAS weights and associations generated
+          from Geuvadis and 49 GTEx tissues.
+        </p>
+        <div class="hero-actions">
+          <a href="{{ url_for('views.browse') }}" class="btn btn-primary">
+            Browse results
+          </a>
+          <a
+            href="{{ url_for('views.download') }}"
+            class="btn btn-outline-primary"
+          >
+            Download data
+          </a>
+        </div>
+      </div>
 
-      <div class="row gy-3 mt-0 mb-4">
-        <div class="col-md-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">📄 Publication</h5>
-              <p class="card-text">
+      <div class="stat-strip" aria-label="Portal coverage summary">
+        <div>
+          <strong>50</strong>
+          <span>human tissue datasets</span>
+        </div>
+        <div>
+          <strong>6</strong>
+          <span>RNA modalities</span>
+        </div>
+        <div>
+          <strong>114</strong>
+          <span>GWAS traits</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container home-content">
+  <p class="limited-text intro-text">
+    Knowledge-driven RNA phenotypes from Pantry are supplemented with residual
+    data-driven phenotypes produced by LaDDR, plus full data-driven phenotypes
+    that can be used as an alternative to knowledge-driven RNA phenotypes. The
+    xTWAS data covers 114 traits using GWAS data from
+    <a href="https://doi.org/10.5281/zenodo.3629742">this collection</a>.
+  </p>
+
+  <div class="row gy-3 mt-0 mb-4 feature-cards">
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="card-title h5">Publications</h2>
+          <div class="resource-list">
+            <div class="resource-item">
+              <h3>Pantry</h3>
+              <p>
                 "Multimodal analysis of RNA sequencing data powers discovery of
-                complex trait genetics" <i>Nature Communications</i> 2024
+                complex trait genetics"
+                <i>Nature Communications</i> 2024
               </p>
               <a
                 href="https://www.nature.com/articles/s41467-024-54840-8"
                 class="btn btn-primary"
               >
-                Read the Paper
+                Read paper
               </a>
             </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">💻 Source Code</h5>
-              <p class="card-text">
-                Pantry pipeline code for RNA phenotyping and genetic analyses
+            <div class="resource-item">
+              <h3>LaDDR</h3>
+              <p>
+                LaDDR preprint describing data-driven RNA phenotype discovery.
               </p>
               <a
-                href="https://github.com/PejLab/Pantry"
-                class="btn btn-primary"
+                href="https://www.biorxiv.org/content/10.64898/2026.02.20.707100v1"
+                class="btn btn-outline-primary"
               >
-                View on GitHub
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">📊 Dataset</h5>
-              <p class="card-text">
-                Permanent data repository with DOI on Zenodo. Contains
-                compressed archives of the downloadable files in this portal.
-              </p>
-              <a
-                href="https://zenodo.org/records/13922139"
-                class="btn btn-primary"
-              >
-                Access the Data
+                Read preprint
               </a>
             </div>
           </div>
         </div>
       </div>
-
-      <p class="limited-text">
-        <a href="/browse">Browse</a> all xTWAS hits and xQTLs for 49 human
-        tissues from GTEx, search for a specific <a href="/traits">trait</a> or
-        <a href="/genes">gene</a>, or <a href="/download">download the data</a>,
-        including RNA phenotypes, covariates, xQTLs, xTWAS weights, and xTWAS
-        hits.
-      </p>
     </div>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="card-title h5">Code</h2>
+          <div class="resource-list">
+            <div class="resource-item">
+              <h3>Pantry</h3>
+              <p>Pipeline code for RNA phenotyping and genetic analyses.</p>
+              <a
+                href="https://github.com/PejLab/Pantry"
+                class="btn btn-primary"
+              >
+                View GitHub
+              </a>
+            </div>
+            <div class="resource-item">
+              <h3>LaDDR</h3>
+              <p>Python package for data-driven RNA phenotyping.</p>
+              <a
+                href="https://github.com/PejLab/LaDDR"
+                class="btn btn-outline-primary"
+              >
+                View GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="card-title h5">Datasets</h2>
+          <div class="resource-list">
+            <div class="resource-item">
+              <h3>Pantry</h3>
+              <p>
+                Zenodo repository with the original Pantry data at the time of
+                publication.
+              </p>
+              <a
+                href="https://zenodo.org/records/13922139"
+                class="btn btn-primary"
+              >
+                Access data
+              </a>
+            </div>
+            <div class="resource-item">
+              <h3>LaDDR</h3>
+              <p>Zenodo repository for LaDDR phenotype and analysis data.</p>
+              <a
+                href="https://zenodo.org/records/19924423"
+                class="btn btn-outline-primary"
+              >
+                Access data
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="limited-text">
+    <a href="{{ url_for('views.browse') }}">Browse</a> all xTWAS hits and xQTLs
+    for 49 human tissues from GTEx, search for a specific
+    <a href="{{ url_for('views.traits') }}">trait</a> or
+    <a href="{{ url_for('views.genes') }}">gene</a>, or
+    <a href="{{ url_for('views.download') }}">download the data</a>, including
+    RNA phenotypes, covariates, xQTLs, xTWAS weights, and xTWAS hits.
+  </p>
+</div>
 {% endblock %}
